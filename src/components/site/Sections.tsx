@@ -17,6 +17,30 @@ export function Hero() {
   const { t } = useI18n();
   return (
     <section className="relative overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32">
+      {/* video background — AI / tech visuals */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <video
+          className="absolute left-1/2 top-1/2 h-full w-full min-h-full min-w-full -translate-x-1/2 -translate-y-1/2 object-cover opacity-60"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="https://images.pexels.com/videos/3129957/free-video-3129957.jpg?auto=compress&cs=tinysrgb&w=1600"
+        >
+          <source
+            src="https://videos.pexels.com/video-files/3129957/3129957-hd_1920_1080_25fps.mp4"
+            type="video/mp4"
+          />
+          <source
+            src="https://videos.pexels.com/video-files/6963744/6963744-hd_1920_1080_25fps.mp4"
+            type="video/mp4"
+          />
+        </video>
+        {/* readability wash — theme aware */}
+        <div className="absolute inset-0 bg-background/70 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
+      </div>
       {/* glows */}
       <div className="pointer-events-none absolute inset-0 grid-lines opacity-40" />
       <div className="pointer-events-none absolute left-1/2 top-24 h-[520px] w-[900px] -translate-x-1/2 glow-blue animate-float" />
