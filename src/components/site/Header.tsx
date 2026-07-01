@@ -2,11 +2,12 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 const nav = [
-  { href: "#services", label: "Services" },
-  { href: "#work", label: "Work" },
-  { href: "#process", label: "Process" },
-  { href: "#about", label: "About" },
-];
+  { to: "/services", label: "Services" },
+  { to: "/work", label: "Portfolio" },
+  { to: "/process", label: "Process" },
+  { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
+] as const;
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -33,13 +34,14 @@ export function Header() {
 
         <nav className="hidden items-center gap-8 md:flex">
           {nav.map((n) => (
-            <a
-              key={n.href}
-              href={n.href}
+            <Link
+              key={n.to}
+              to={n.to}
+              activeProps={{ className: "text-foreground" }}
               className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               {n.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
