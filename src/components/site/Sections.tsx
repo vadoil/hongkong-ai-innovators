@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useI18n } from "@/lib/i18n";
 import {
   ArrowUpRight,
   Search,
@@ -13,47 +14,51 @@ import {
 
 /* ---------- HERO ---------- */
 export function Hero() {
+  const { t } = useI18n();
   return (
     <section className="relative overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32">
       {/* glows */}
       <div className="pointer-events-none absolute inset-0 grid-lines opacity-40" />
-      <div className="pointer-events-none absolute left-1/2 top-24 h-[520px] w-[900px] -translate-x-1/2 glow-blue" />
-      <div className="pointer-events-none absolute right-0 top-40 h-[420px] w-[420px] glow-jade" />
+      <div className="pointer-events-none absolute left-1/2 top-24 h-[520px] w-[900px] -translate-x-1/2 glow-blue animate-float" />
+      <div className="pointer-events-none absolute right-0 top-40 h-[420px] w-[420px] glow-jade animate-float" style={{ animationDelay: "-3s" }} />
+      <AiNetwork />
 
       <div className="relative mx-auto max-w-7xl px-6">
-        <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm">
+        <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm reveal reveal-in">
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-jade" />
-          Hong Kong · Full-cycle product studio
+          {t("hero.badge")}
         </div>
-        <h1 className="max-w-4xl font-display text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl md:text-7xl lg:text-[88px]">
-          From market gap
+        <h1 className="max-w-4xl font-display text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl md:text-7xl lg:text-[88px] reveal reveal-in" style={{ animationDelay: "0.08s" }}>
+          {t("hero.title.a")}
           <br />
-          to <span className="text-primary">shipped product.</span>
+          {t("hero.title.b")}{" "}
+          <span className="bg-gradient-to-r from-primary via-jade to-primary bg-clip-text text-transparent animate-gradient-pan">
+            {t("hero.title.c")}
+          </span>
         </h1>
-        <p className="mt-6 max-w-2xl text-base text-muted-foreground md:text-lg">
-          Research, strategy, design and engineering for software and cloud teams. One senior
-          team, from the first interview to launch and growth.
+        <p className="mt-6 max-w-2xl text-base text-muted-foreground md:text-lg reveal reveal-in" style={{ animationDelay: "0.18s" }}>
+          {t("hero.lead")}
         </p>
 
-        <div className="mt-10 flex flex-wrap items-center gap-3">
+        <div className="mt-10 flex flex-wrap items-center gap-3 reveal reveal-in" style={{ animationDelay: "0.28s" }}>
           <Link
             to="/contact"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-[0_10px_40px_-10px_var(--color-primary)] transition-transform hover:-translate-y-0.5"
           >
-            Start a project <ArrowUpRight className="h-4 w-4" />
+            {t("hero.cta.primary")} <ArrowUpRight className="h-4 w-4" />
           </Link>
           <Link
             to="/work"
             className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface"
           >
-            See our work
+            {t("hero.cta.secondary")}
           </Link>
         </div>
 
         {/* trust strip */}
-        <div className="mt-20">
+        <div className="mt-20 reveal reveal-in" style={{ animationDelay: "0.4s" }}>
           <div className="text-xs uppercase tracking-widest text-muted-foreground">
-            Trusted by teams building in
+            {t("hero.trust")}
           </div>
           <div className="mt-4 flex flex-wrap items-center gap-x-10 gap-y-4 opacity-70">
             {["FINTECH", "SAAS", "CLOUD", "LOGISTICS", "HEALTHTECH", "AI/ML"].map((l) => (
@@ -65,6 +70,66 @@ export function Hero() {
         </div>
       </div>
     </section>
+  );
+}
+
+/* AI neural-network animated visual */
+function AiNetwork() {
+  // Fixed positions for a clean, on-brand constellation
+  const nodes = [
+    { x: 80, y: 120 }, { x: 220, y: 60 }, { x: 360, y: 180 },
+    { x: 520, y: 90 }, { x: 680, y: 220 }, { x: 820, y: 130 },
+    { x: 940, y: 260 }, { x: 1080, y: 90 }, { x: 1180, y: 220 },
+    { x: 160, y: 300 }, { x: 420, y: 340 }, { x: 760, y: 380 }, { x: 1020, y: 360 },
+  ];
+  const edges = [
+    [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8],
+    [0, 9], [2, 9], [3, 10], [4, 10], [5, 11], [6, 11], [7, 12], [8, 12],
+    [9, 10], [10, 11], [11, 12],
+  ];
+  return (
+    <svg
+      aria-hidden
+      className="pointer-events-none absolute inset-x-0 top-16 mx-auto h-[520px] w-full max-w-[1280px] opacity-70 md:opacity-90"
+      viewBox="0 0 1280 480"
+      preserveAspectRatio="xMidYMid slice"
+    >
+      <defs>
+        <linearGradient id="edge" x1="0" x2="1">
+          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0" />
+          <stop offset="50%" stopColor="var(--color-primary)" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="var(--color-jade)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {edges.map(([a, b], i) => (
+        <line
+          key={i}
+          x1={nodes[a].x}
+          y1={nodes[a].y}
+          x2={nodes[b].x}
+          y2={nodes[b].y}
+          stroke="url(#edge)"
+          strokeWidth="1"
+          strokeDasharray="4 8"
+          className="animate-dash"
+          style={{ animationDelay: `${(i % 6) * -0.7}s` }}
+        />
+      ))}
+      {nodes.map((n, i) => (
+        <g key={i}>
+          <circle
+            cx={n.x}
+            cy={n.y}
+            r="10"
+            fill="var(--color-primary)"
+            opacity="0.12"
+            className="animate-pulse-node"
+            style={{ animationDelay: `${(i % 5) * -0.5}s`, transformOrigin: `${n.x}px ${n.y}px` }}
+          />
+          <circle cx={n.x} cy={n.y} r="2.4" fill="var(--color-primary)" />
+        </g>
+      ))}
+    </svg>
   );
 }
 
