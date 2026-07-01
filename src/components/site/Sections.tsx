@@ -42,12 +42,12 @@ export function Hero() {
           >
             Start a project <ArrowUpRight className="h-4 w-4" />
           </Link>
-          <a
-            href="#work"
+          <Link
+            to="/work"
             className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface"
           >
             See our work
-          </a>
+          </Link>
         </div>
 
         {/* trust strip */}
@@ -156,9 +156,9 @@ export function Services() {
         <SectionHead eyebrow="Services" title="Deep on every stage." />
         <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => (
-            <a
+            <Link
               key={s.title}
-              href="#contact"
+              to="/contact"
               className="group relative overflow-hidden rounded-2xl border border-border bg-background p-7 transition-all hover:border-primary/50 hover:bg-surface"
             >
               <s.icon className="h-6 w-6 text-primary" />
@@ -167,7 +167,7 @@ export function Services() {
               <div className="mt-6 inline-flex items-center gap-1 text-sm text-primary opacity-0 transition-opacity group-hover:opacity-100">
                 Learn more <ArrowUpRight className="h-4 w-4" />
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
