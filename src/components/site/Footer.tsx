@@ -22,26 +22,11 @@ export function Footer() {
               Navigate
             </div>
             <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <a className="hover:text-primary" href="#services">
-                  Services
-                </a>
-              </li>
-              <li>
-                <a className="hover:text-primary" href="#work">
-                  Work
-                </a>
-              </li>
-              <li>
-                <a className="hover:text-primary" href="#process">
-                  Process
-                </a>
-              </li>
-              <li>
-                <Link className="hover:text-primary" to="/contact">
-                  Contact
-                </Link>
-              </li>
+              <li><Link className="hover:text-primary" to="/services">Services</Link></li>
+              <li><Link className="hover:text-primary" to="/work">Portfolio</Link></li>
+              <li><Link className="hover:text-primary" to="/process">Process</Link></li>
+              <li><Link className="hover:text-primary" to="/about">About</Link></li>
+              <li><Link className="hover:text-primary" to="/contact">Contact</Link></li>
             </ul>
           </div>
           <div>
@@ -50,7 +35,9 @@ export function Footer() {
             </div>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
               <li>hello@meridian.hk</li>
-              <li>Central, Hong Kong</li>
+              <li>Suite 2201, 22/F, Tower 1,</li>
+              <li>Admiralty Centre, 18 Harcourt Rd,</li>
+              <li>Admiralty, Hong Kong SAR</li>
               <li className="flex gap-3 pt-2 text-foreground">
                 <a href="#" className="hover:text-primary">LinkedIn</a>
                 <a href="#" className="hover:text-primary">X</a>

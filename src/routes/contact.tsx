@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowUpRight, Mail, MapPin } from "lucide-react";
+import { ArrowUpRight, Mail, MapPin, Clock, Phone } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { toast } from "sonner";
@@ -59,17 +59,44 @@ function ContactPage() {
               <p className="mt-6 max-w-md text-muted-foreground">
                 Share the shape of the project. We reply within one business day with next steps.
               </p>
-              <div className="mt-10 space-y-4 text-sm">
-                <div className="flex items-center gap-3">
-                  <Mail className="h-4 w-4 text-primary" />
+              <div className="mt-10 space-y-5 text-sm">
+                <div className="flex items-start gap-3">
+                  <Mail className="mt-0.5 h-4 w-4 text-primary" />
                   <a href="mailto:hello@meridian.hk" className="hover:text-primary">
                     hello@meridian.hk
                   </a>
                 </div>
-                <div className="flex items-center gap-3">
-                  <MapPin className="h-4 w-4 text-primary" />
-                  Central, Hong Kong
+                <div className="flex items-start gap-3">
+                  <Phone className="mt-0.5 h-4 w-4 text-primary" />
+                  <a href="tel:+85258085678" className="hover:text-primary">
+                    +852 5808 5678
+                  </a>
                 </div>
+                <div className="flex items-start gap-3">
+                  <MapPin className="mt-0.5 h-4 w-4 text-primary" />
+                  <div>
+                    <div className="text-foreground">Meridian HK — Head office</div>
+                    <div className="text-muted-foreground">
+                      Suite 2201, 22/F, Tower 1<br />
+                      Admiralty Centre, 18 Harcourt Road<br />
+                      Admiralty, Hong Kong SAR
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Clock className="mt-0.5 h-4 w-4 text-primary" />
+                  <div className="text-muted-foreground">
+                    Mon – Fri · 09:30 – 19:00 HKT
+                  </div>
+                </div>
+              </div>
+              <div className="mt-8 overflow-hidden rounded-2xl border border-border">
+                <iframe
+                  title="Meridian HK office — Admiralty, Hong Kong"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=114.1625%2C22.2755%2C114.1685%2C22.2795&layer=mapnik&marker=22.2775%2C114.1655"
+                  className="h-56 w-full"
+                  loading="lazy"
+                />
               </div>
               <div className="mt-10">
                 <Link
