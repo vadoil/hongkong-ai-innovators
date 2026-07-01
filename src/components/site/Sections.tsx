@@ -241,9 +241,9 @@ export function Work() {
         <SectionHead eyebrow="Selected work" title="Shipped, measured, kept." />
         <div className="mt-14 grid gap-6 md:grid-cols-2">
           {cases.map((c) => (
-            <a
+            <Link
               key={c.title}
-              href="#contact"
+              to="/work"
               className="group overflow-hidden rounded-2xl border border-border bg-background transition-colors hover:border-primary/50"
             >
               <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary/25 via-surface-2 to-jade/20">
@@ -262,8 +262,16 @@ export function Work() {
                 </div>
                 <ArrowUpRight className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
               </div>
-            </a>
+            </Link>
           ))}
+        </div>
+        <div className="mt-10">
+          <Link
+            to="/work"
+            className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface"
+          >
+            See full portfolio <ArrowUpRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </section>
