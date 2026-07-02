@@ -94,6 +94,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Meridian HK — Full-cycle product studio from Hong Kong" },
+      { name: "description", content: "Hong Kong Digital Masters is a web application for a leading digital agency specializing in website and app development." },
+      { property: "og:description", content: "Hong Kong Digital Masters is a web application for a leading digital agency specializing in website and app development." },
+      { name: "twitter:description", content: "Hong Kong Digital Masters is a web application for a leading digital agency specializing in website and app development." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a61f7ab4-e23f-4bd3-9a9a-3179eba708ef/id-preview-4f993f8f--ff7c9cd5-e8b7-45d3-8eb8-c9635f27a229.lovable.app-1782920172221.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a61f7ab4-e23f-4bd3-9a9a-3179eba708ef/id-preview-4f993f8f--ff7c9cd5-e8b7-45d3-8eb8-c9635f27a229.lovable.app-1782920172221.png" },
     ],
     links: [
       {
