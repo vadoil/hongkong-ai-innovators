@@ -8,14 +8,26 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      DEPLOY_HOST: ${{ secrets.VPS_HOST || secrets.SSH_HOST }}
+      DEPLOY_USER: ${{ secrets.VPS_USER || secrets.SSH_USER || 'deploy' }}
+      DEPLOY_KEY: ${{ secrets.VPS_SSH_KEY || secrets.SSH_KEY }}
+      DEPLOY_PORT: ${{ secrets.VPS_PORT || secrets.SSH_PORT || '22' }}
     steps:
+      - name: Check deploy secrets
+        run: |
+          test -n "$DEPLOY_HOST" || (echo "Missing VPS_HOST or SSH_HOST secret" && exit 1)
+          test -n "$DEPLOY_USER" || (echo "Missing VPS_USER or SSH_USER secret" && exit 1)
+          test -n "$DEPLOY_KEY" || (echo "Missing VPS_SSH_KEY or SSH_KEY secret" && exit 1)
+          test -n "$DEPLOY_PORT" || (echo "Missing VPS_PORT or SSH_PORT secret" && exit 1)
+
       - name: Trigger remote deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT }}
+          host: ${{ env.DEPLOY_HOST }}
+          username: ${{ env.DEPLOY_USER }}
+          key: ${{ env.DEPLOY_KEY }}
+          port: ${{ env.DEPLOY_PORT }}
           script: |
             set -e
             cd /var/www/cwh
