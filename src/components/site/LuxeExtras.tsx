@@ -74,7 +74,7 @@ export function Awards() {
 
         <div className="mt-14 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           {items.map((i, idx) => (
-            <Reveal key={i} delay={idx * 60}>
+            <Reveal key={i} delay={idx * 0.06}>
               <div className="group relative overflow-hidden rounded-2xl border border-border bg-background/60 p-5 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-primary/60 hover:shadow-[0_30px_80px_-40px_var(--color-primary)]">
                 <div className="pointer-events-none absolute -inset-px rounded-2xl bg-gradient-to-br from-primary/10 via-transparent to-jade/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                 <div className="relative flex items-center gap-3">
@@ -156,7 +156,7 @@ export function BigStats() {
 
         <div className="mt-16 grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8">
           {stats.map((s, i) => (
-            <Reveal key={i} delay={i * 80}>
+            <Reveal key={i} delay={i * 0.08}>
               <div className="group relative overflow-hidden rounded-3xl border border-border bg-surface/50 p-6 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-primary/60 md:p-8">
                 <div className="pointer-events-none absolute -inset-px rounded-3xl bg-gradient-to-br from-primary/20 via-transparent to-cn-gold/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                 <div className="relative">
@@ -198,7 +198,7 @@ export function Team() {
 
         <div className="mt-14 grid grid-cols-2 gap-5 md:grid-cols-4 md:gap-6">
           {members.map((i, idx) => (
-            <Reveal key={i} delay={idx * 80}>
+            <Reveal key={i} delay={idx * 0.08}>
               <div className="group relative overflow-hidden rounded-3xl border border-border bg-background/60 p-6 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-primary/60">
                 <div className={`relative mb-6 flex aspect-[4/5] items-end overflow-hidden rounded-2xl bg-gradient-to-br ${accents[idx]}`}>
                   <div className="absolute inset-0 grid-lines opacity-30" />
