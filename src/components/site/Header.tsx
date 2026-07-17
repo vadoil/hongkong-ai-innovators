@@ -9,6 +9,7 @@ const nav = [
   { to: "/work", key: "nav.work" },
   { to: "/process", key: "nav.process" },
   { to: "/about", key: "nav.about" },
+  { to: "/estimate", key: "nav.estimate" },
   { to: "/contact", key: "nav.contact" },
 ] as const;
 

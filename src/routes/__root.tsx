@@ -14,6 +14,33 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/lib/theme";
 import { I18nProvider } from "@/lib/i18n";
+import { FloatingChat } from "@/components/site/FloatingChat";
+
+const ORG_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "CWH.HK",
+  url: "https://cwh.hk",
+  logo: "https://cwh.hk/favicon.png",
+  description:
+    "Full-cycle product studio from Hong Kong. Websites, apps, SaaS and AI integrations.",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Hong Kong",
+    addressRegion: "Admiralty",
+    addressCountry: "HK",
+  },
+  sameAs: ["https://cwh.hk"],
+  contactPoint: [
+    {
+      "@type": "ContactPoint",
+      email: "hello@cwh.hk",
+      contactType: "sales",
+      areaServed: ["HK", "CN", "APAC", "EU", "US"],
+      availableLanguage: ["zh", "en", "ru"],
+    },
+  ],
+};
 
 function NotFoundComponent() {
   return (
@@ -113,6 +140,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap",
       },
+      { rel: "canonical", href: "https://cwh.hk/" },
+      { rel: "alternate", hrefLang: "zh", href: "https://cwh.hk/" },
+      { rel: "alternate", hrefLang: "en", href: "https://cwh.hk/" },
+      { rel: "alternate", hrefLang: "ru", href: "https://cwh.hk/" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://cwh.hk/" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(ORG_JSONLD),
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -144,6 +182,7 @@ function RootComponent() {
         <I18nProvider>
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
+          <FloatingChat />
           <Toaster position="bottom-right" />
         </I18nProvider>
       </ThemeProvider>
