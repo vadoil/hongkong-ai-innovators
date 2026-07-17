@@ -15,12 +15,12 @@ echo "==> install deps (bun)"
 export PATH="$HOME/.bun/bin:$PATH"
 bun install
 
-echo "==> ensure better-sqlite3 (prebuilt via npm)"
-npm i --no-save --omit=dev better-sqlite3 >/dev/null 2>&1 || true
-
 echo "==> build (nitro node-server preset)"
 export NITRO_PRESET=node-server
 bun run build
+
+echo "==> ensure better-sqlite3 (prebuilt via npm)"
+npm i --no-save --omit=dev better-sqlite3 >/dev/null 2>&1 || true
 
 echo "==> ensure data dir"
 sudo mkdir -p /var/lib/cwh
