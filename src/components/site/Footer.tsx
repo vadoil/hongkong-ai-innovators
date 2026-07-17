@@ -34,9 +34,9 @@ export function Footer() {
             </div>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
               <li>hello@cwh.hk</li>
-              <li>Suite 2201, 22/F, Tower 1,</li>
-              <li>Admiralty Centre, 18 Harcourt Rd,</li>
-              <li>Admiralty, Hong Kong SAR</li>
+              <li>{t("footer.address.1")}</li>
+              <li>{t("footer.address.2")}</li>
+              <li>{t("footer.address.3")}</li>
               <li className="flex gap-3 pt-2 text-foreground">
                 <a href="#" className="hover:text-primary">LinkedIn</a>
                 <a href="#" className="hover:text-primary">X</a>
@@ -46,7 +46,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:items-center">
-          <div>© {new Date().getFullYear()} CWH.HK. Hong Kong.</div>
+          <div>© {new Date().getFullYear()} CWH.HK · {t("footer.copy")}</div>
           <div className="flex gap-6">
             <a href="#" className="hover:text-foreground">{t("footer.privacy")}</a>
             <a href="#" className="hover:text-foreground">{t("footer.terms")}</a>
