@@ -334,7 +334,6 @@ function UniverseCore({ labelA, labelB, link }: { labelA: string; labelB: string
             fill="oklch(0.92 0.14 85)"
             style={{
               offsetPath: "path('M 110 300 C 200 160, 360 440, 450 300')",
-              // @ts-expect-error - offsetPath fallback for older browsers
               offsetDistance: "0%",
               animation: `packet 3.6s linear ${i * 0.6}s infinite`,
               filter: "drop-shadow(0 0 6px oklch(0.82 0.15 85))",
