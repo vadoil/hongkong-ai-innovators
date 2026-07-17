@@ -25,8 +25,7 @@ async function getDb() {
     }
     try {
       const modName = "better-sqlite3";
-      // @ts-expect-error - optional native dep, only present on VPS
-      const mod = await import(/* @vite-ignore */ modName);
+      const mod: any = await import(/* @vite-ignore */ modName);
       const Database = mod.default || mod;
       const path = process.env.LEADS_DB_PATH || "./data/leads.db";
       await mkdir(dirname(path), { recursive: true }).catch(() => {});
