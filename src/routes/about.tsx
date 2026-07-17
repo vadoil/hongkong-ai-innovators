@@ -3,6 +3,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { PageHero } from "@/components/site/PageHero";
 import { WhyUs, Testimonials, TechStrip, CtaBand } from "@/components/site/Sections";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -17,14 +18,15 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
+  const { t } = useI18n();
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <main>
         <PageHero
-          eyebrow="About"
-          title={<>A studio, <span className="text-primary">not a body shop.</span></>}
-          lead="We stay small on purpose. Every project has a senior engineer, a senior designer and a strategy lead — from day one to launch."
+          eyebrow={t("page.about.eyebrow")}
+          title={<>{t("page.about.title.a")} <span className="text-primary">{t("page.about.title.hl")}</span></>}
+          lead={t("page.about.lead")}
         />
         <WhyUs />
         <TechStrip />

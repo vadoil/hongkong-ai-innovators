@@ -3,6 +3,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { PageHero } from "@/components/site/PageHero";
 import { Services, Pillars, CtaBand } from "@/components/site/Sections";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -17,14 +18,15 @@ export const Route = createFileRoute("/services")({
 });
 
 function ServicesPage() {
+  const { t } = useI18n();
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <main>
         <PageHero
-          eyebrow="Services"
-          title={<>Deep on every stage <span className="text-primary">of the product.</span></>}
-          lead="From the first interview to launch dashboards — a senior team across research, strategy, design, engineering and growth."
+          eyebrow={t("page.services.eyebrow")}
+          title={<>{t("page.services.title.a")} <span className="text-primary">{t("page.services.title.hl")}</span></>}
+          lead={t("page.services.lead")}
         />
         <Pillars />
         <Services />
