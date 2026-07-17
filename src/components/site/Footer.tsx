@@ -8,10 +8,10 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2">
-              <span className="inline-block h-2 w-2 rounded-full bg-primary" />
+            <div className="flex items-center gap-2.5">
+              <img src="/favicon.png" alt="" width={32} height={32} className="h-8 w-8" />
               <span className="font-display text-lg font-semibold tracking-tight">
-                CWH<span className="text-primary">.hk</span>
+                CWH<span className="text-primary">.HK</span>
               </span>
             </div>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">{t("footer.tagline")}</p>
