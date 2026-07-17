@@ -24,10 +24,25 @@ import caseAi from "@/assets/case-ai.jpg";
 import caseHealth from "@/assets/case-health.jpg";
 import caseEcom from "@/assets/case-ecom.jpg";
 import caseVoice from "@/assets/case-voice.jpg";
+import caseCrypto1 from "@/assets/case-crypto1.jpg";
+import caseCrypto2 from "@/assets/case-crypto2.jpg";
+import caseFinMonitor from "@/assets/case-finmonitor.jpg";
+import caseConstruction from "@/assets/case-construction.jpg";
 import heroUniverse from "@/assets/hero-universe.jpg";
 import patternCloud from "@/assets/pattern-cloud.jpg";
 
-export const caseCovers = [caseFintech, caseCloud, caseAi, caseHealth, caseEcom, caseVoice];
+export const caseCovers = [
+  caseFintech,
+  caseCloud,
+  caseAi,
+  caseHealth,
+  caseEcom,
+  caseVoice,
+  caseCrypto1,
+  caseCrypto2,
+  caseFinMonitor,
+  caseConstruction,
+];
 
 /* ---------- HERO ---------- */
 export function Hero() {

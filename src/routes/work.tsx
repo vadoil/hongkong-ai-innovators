@@ -20,7 +20,7 @@ export const Route = createFileRoute("/work")({
 
 function WorkPage() {
   const { t } = useI18n();
-  const ids = [1, 2, 3, 4, 5, 6] as const;
+  const ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
