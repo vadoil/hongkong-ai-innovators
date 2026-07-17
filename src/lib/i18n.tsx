@@ -23,6 +23,16 @@ const zh: Dict = {
   "hero.cta.primary": "启动项目",
   "hero.cta.secondary": "查看案例",
   "hero.trust": "服务过的团队来自",
+  "hero.m1.k": "120+",
+  "hero.m1.v": "已交付项目",
+  "hero.m2.k": "5★",
+  "hero.m2.v": "客户口碑",
+  "hero.m3.k": "24/7",
+  "hero.m3.v": "亚太 · 欧洲 · 北美",
+  "hero.marquee": "金融科技 · SaaS · 云计算 · 物流 · 医疗科技 · 人工智能 · 电商 · 媒体 · 教育",
+  "hero.universe.a": "数据宇宙",
+  "hero.universe.b": "产品宇宙",
+  "hero.universe.link": "AI 连接双宇宙",
 
   // pillars
   "pillars.eyebrow": "我们做什么",
@@ -166,6 +176,10 @@ const zh: Dict = {
   "footer.contact": "联系方式",
   "footer.privacy": "隐私政策",
   "footer.terms": "使用条款",
+  "footer.address.1": "香港特别行政区 金钟",
+  "footer.address.2": "夏悫道 18 号 海富中心",
+  "footer.address.3": "第一座 22 楼 2201 室",
+  "footer.copy": "香港",
 
   // page heros
   "page.services.eyebrow": "服务",
