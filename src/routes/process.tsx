@@ -3,6 +3,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { PageHero } from "@/components/site/PageHero";
 import { Process, CtaBand } from "@/components/site/Sections";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/process")({
   head: () => ({
@@ -17,14 +18,15 @@ export const Route = createFileRoute("/process")({
 });
 
 function ProcessPage() {
+  const { t } = useI18n();
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <main>
         <PageHero
-          eyebrow="Process"
-          title={<>Five stages. <span className="text-primary">One team.</span></>}
-          lead="A predictable path from a rough idea to a launched, measured product — with no hand-offs and no dropped context."
+          eyebrow={t("page.process.eyebrow")}
+          title={<>{t("page.process.title.a")} <span className="text-primary">{t("page.process.title.hl")}</span></>}
+          lead={t("page.process.lead")}
         />
         <Process />
         <CtaBand />

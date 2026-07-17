@@ -4,6 +4,7 @@ import { ArrowUpRight, Mail, MapPin, Clock, Phone } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -28,13 +29,14 @@ const budgets = ["< $10k", "$10k – $30k", "$30k – $75k", "$75k – $150k", "
 
 function ContactPage() {
   const [pending, setPending] = useState(false);
+  const { t } = useI18n();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPending(true);
     // TODO: wire to Supabase `leads` table in step 3
     await new Promise((r) => setTimeout(r, 500));
-    toast.success("Thanks — we'll reply within one business day.");
+    toast.success(t("contact.f.success"));
     (e.target as HTMLFormElement).reset();
     setPending(false);
   };
@@ -49,16 +51,14 @@ function ContactPage() {
             <div className="md:col-span-2">
               <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
                 <span className="inline-block h-px w-8 bg-primary" />
-                Contact
+                {t("contact.eyebrow")}
               </div>
               <h1 className="mt-4 font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-                Tell us about
+                {t("contact.title.a")}
                 <br />
-                your <span className="text-primary">product.</span>
+                <span className="text-primary">{t("contact.title.hl")}</span>
               </h1>
-              <p className="mt-6 max-w-md text-muted-foreground">
-                Share the shape of the project. We reply within one business day with next steps.
-              </p>
+              <p className="mt-6 max-w-md text-muted-foreground">{t("contact.lead")}</p>
               <div className="mt-10 space-y-5 text-sm">
                 <div className="flex items-start gap-3">
                   <Mail className="mt-0.5 h-4 w-4 text-primary" />
@@ -75,7 +75,7 @@ function ContactPage() {
                 <div className="flex items-start gap-3">
                   <MapPin className="mt-0.5 h-4 w-4 text-primary" />
                   <div>
-                    <div className="text-foreground">Meridian HK — Head office</div>
+                    <div className="text-foreground">{t("contact.office.title")}</div>
                     <div className="text-muted-foreground">
                       Suite 2201, 22/F, Tower 1<br />
                       Admiralty Centre, 18 Harcourt Road<br />
@@ -85,9 +85,7 @@ function ContactPage() {
                 </div>
                 <div className="flex items-start gap-3">
                   <Clock className="mt-0.5 h-4 w-4 text-primary" />
-                  <div className="text-muted-foreground">
-                    Mon – Fri · 09:30 – 19:00 HKT
-                  </div>
+                  <div className="text-muted-foreground">{t("contact.office.hours")}</div>
                 </div>
               </div>
               <div className="mt-8 overflow-hidden rounded-2xl border border-border">
@@ -103,7 +101,7 @@ function ContactPage() {
                   to="/"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                  ← Back to home
+                  {t("contact.back")}
                 </Link>
               </div>
             </div>
@@ -113,12 +111,12 @@ function ContactPage() {
               className="md:col-span-3 rounded-2xl border border-border bg-surface/60 p-6 backdrop-blur-sm md:p-8"
             >
               <div className="grid gap-5 sm:grid-cols-2">
-                <Field label="Name" name="name" required maxLength={100} />
-                <Field label="Email" name="email" type="email" required maxLength={255} />
-                <Field label="Company" name="company" maxLength={120} />
+                <Field label={t("contact.f.name")} name="name" required maxLength={100} />
+                <Field label={t("contact.f.email")} name="email" type="email" required maxLength={255} />
+                <Field label={t("contact.f.company")} name="company" maxLength={120} />
                 <div>
                   <label className="text-xs uppercase tracking-widest text-muted-foreground">
-                    Budget range
+                    {t("contact.f.budget")}
                   </label>
                   <select
                     name="budget_range"
@@ -126,7 +124,7 @@ function ContactPage() {
                     className="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary"
                   >
                     <option value="" disabled>
-                      Select…
+                      {t("contact.f.budget.placeholder")}
                     </option>
                     {budgets.map((b) => (
                       <option key={b}>{b}</option>
@@ -136,7 +134,7 @@ function ContactPage() {
               </div>
               <div className="mt-5">
                 <label className="text-xs uppercase tracking-widest text-muted-foreground">
-                  Message
+                  {t("contact.f.message")}
                 </label>
                 <textarea
                   name="message"
@@ -151,7 +149,7 @@ function ContactPage() {
                 disabled={pending}
                 className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-[0_10px_40px_-10px_var(--color-primary)] transition-transform hover:-translate-y-0.5 disabled:opacity-60"
               >
-                {pending ? "Sending…" : "Send"} <ArrowUpRight className="h-4 w-4" />
+                {pending ? t("contact.f.sending") : t("contact.f.send")} <ArrowUpRight className="h-4 w-4" />
               </button>
             </form>
           </div>

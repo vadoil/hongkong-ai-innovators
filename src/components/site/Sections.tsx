@@ -12,6 +12,14 @@ import {
   Cloud,
   Rocket,
 } from "lucide-react";
+import caseFintech from "@/assets/case-fintech.jpg";
+import caseCloud from "@/assets/case-cloud.jpg";
+import caseAi from "@/assets/case-ai.jpg";
+import caseHealth from "@/assets/case-health.jpg";
+import caseEcom from "@/assets/case-ecom.jpg";
+import caseVoice from "@/assets/case-voice.jpg";
+
+export const caseCovers = [caseFintech, caseCloud, caseAi, caseHealth, caseEcom, caseVoice];
 
 /* ---------- HERO ---------- */
 export function Hero() {
@@ -159,46 +167,26 @@ function AiNetwork() {
 }
 
 /* ---------- PILLARS ---------- */
-const pillars = [
-  {
-    icon: Search,
-    title: "Market & niche research",
-    body: "Where the demand actually is, who your buyer is, and how to enter without wasting runway.",
-  },
-  {
-    icon: FileText,
-    title: "Strategy & technical specs",
-    body: "A product plan and engineering spec (TZ) your team can build against — no ambiguity.",
-  },
-  {
-    icon: Layers,
-    title: "Design & engineering",
-    body: "Web, mobile and cloud services shipped end-to-end by a senior in-house team.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Growth marketing",
-    body: "Positioning, acquisition and activation loops tied to the metrics that fund the next round.",
-  },
-];
+const pillarIcons = [Search, FileText, Layers, TrendingUp];
 
 export function Pillars() {
+  const { t } = useI18n();
   return (
     <section id="services" className="relative py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHead
-          eyebrow="What we do"
-          title="Four pillars, one team."
-          lead="From the first user interview to the launch dashboard — no hand-offs, no dropped context."
+          eyebrow={t("pillars.eyebrow")}
+          title={t("pillars.title")}
+          lead={t("pillars.lead")}
         />
         <div className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2 lg:grid-cols-4">
-          {pillars.map((p, i) => (
-            <Reveal key={p.title} delay={i * 0.08} className="group relative bg-background p-8 transition-colors hover:bg-surface">
+          {pillarIcons.map((Icon, i) => (
+            <Reveal key={i} delay={i * 0.08} className="group relative bg-background p-8 transition-colors hover:bg-surface">
               <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:scale-110">
-                <p.icon className="h-5 w-5 transition-transform duration-500 group-hover:rotate-6 group-hover:animate-icon-bob" />
+                <Icon className="h-5 w-5 transition-transform duration-500 group-hover:rotate-6 group-hover:animate-icon-bob" />
               </div>
-              <h3 className="mt-6 font-display text-lg font-semibold">{p.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+              <h3 className="mt-6 font-display text-lg font-semibold">{t(`pillars.${i + 1}.t`)}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t(`pillars.${i + 1}.d`)}</p>
             </Reveal>
           ))}
         </div>
@@ -208,59 +196,29 @@ export function Pillars() {
 }
 
 /* ---------- SERVICES DETAIL ---------- */
-const services = [
-  {
-    icon: Compass,
-    title: "Discovery & research",
-    body: "Market sizing, competitor teardown, user interviews. You leave with a clear thesis and an evidence trail.",
-  },
-  {
-    icon: FileText,
-    title: "MVP scoping & TZ",
-    body: "Priorities, scope cuts, and a technical specification your engineers can execute without a translator.",
-  },
-  {
-    icon: PenTool,
-    title: "UX / UI design",
-    body: "Interface systems, prototypes and production-ready screens. Design tokens, not decoration.",
-  },
-  {
-    icon: Cloud,
-    title: "Full-stack & cloud build",
-    body: "Web, mobile and infra — React, Node, TypeScript, AWS/GCP, Supabase. Ship weekly, not quarterly.",
-  },
-  {
-    icon: Rocket,
-    title: "Launch & growth",
-    body: "Positioning, landing pages, analytics, paid and lifecycle. Move the numbers that move the business.",
-  },
-  {
-    icon: Layers,
-    title: "AI integration",
-    body: "LLM features that actually ship: retrieval, agents, evals. Guardrails and cost baked in from day one.",
-  },
-];
+const serviceIcons = [Compass, FileText, PenTool, Cloud, Rocket, Layers];
 
 export function Services() {
+  const { t } = useI18n();
   return (
     <section className="relative border-t border-border bg-surface/40 py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
-        <SectionHead eyebrow="Services" title="Deep on every stage." />
+        <SectionHead eyebrow={t("services.eyebrow")} title={t("services.title")} />
         <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((s, i) => (
-            <Reveal key={s.title} delay={i * 0.06}>
+          {serviceIcons.map((Icon, i) => (
+            <Reveal key={i} delay={i * 0.06}>
               <Link
                 to="/contact"
                 className="group relative block overflow-hidden rounded-2xl border border-border bg-background p-7 transition-all duration-500 hover:-translate-y-1 hover:border-primary/50 hover:bg-surface hover:shadow-[0_20px_60px_-30px_var(--color-primary)]"
               >
                 <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                 <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-500 group-hover:scale-110">
-                  <s.icon className="h-5 w-5 transition-transform duration-500 group-hover:rotate-6 group-hover:animate-icon-bob" />
+                  <Icon className="h-5 w-5 transition-transform duration-500 group-hover:rotate-6 group-hover:animate-icon-bob" />
                 </div>
-                <h3 className="mt-6 font-display text-xl font-semibold">{s.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+                <h3 className="mt-6 font-display text-xl font-semibold">{t(`services.${i + 1}.t`)}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t(`services.${i + 1}.d`)}</p>
                 <div className="mt-6 inline-flex items-center gap-1 text-sm text-primary opacity-0 -translate-x-2 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100">
-                  Learn more <ArrowUpRight className="h-4 w-4" />
+                  {t("services.learn")} <ArrowUpRight className="h-4 w-4" />
                 </div>
               </Link>
             </Reveal>
@@ -272,29 +230,24 @@ export function Services() {
 }
 
 /* ---------- PROCESS ---------- */
-const steps = [
-  { n: "01", t: "Research", d: "Interviews, market and competitor analysis." },
-  { n: "02", t: "Strategy & TZ", d: "Positioning, roadmap, technical spec." },
-  { n: "03", t: "Design", d: "Systems, prototypes, production screens." },
-  { n: "04", t: "Build", d: "Weekly releases across web, mobile and cloud." },
-  { n: "05", t: "Launch & grow", d: "Analytics, acquisition, activation loops." },
-];
+const stepNums = ["01", "02", "03", "04", "05"];
 
 export function Process() {
+  const { t } = useI18n();
   return (
     <section id="process" className="relative py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
-        <SectionHead eyebrow="Process" title="Five stages. One team." />
+        <SectionHead eyebrow={t("process.eyebrow")} title={t("process.title")} />
         <div className="relative mt-14 grid gap-6 md:grid-cols-5">
           <div className="pointer-events-none absolute left-0 right-0 top-6 hidden h-px bg-gradient-to-r from-transparent via-border to-transparent md:block" />
-          {steps.map((s, i) => (
-            <Reveal key={s.n} delay={i * 0.1} className="group relative">
+          {stepNums.map((n, i) => (
+            <Reveal key={n} delay={i * 0.1} className="group relative">
               <div className="relative flex h-12 w-12 items-center justify-center rounded-full border border-border bg-background font-display text-sm text-primary">
                 <span className="absolute inset-0 rounded-full bg-primary/10 blur-md opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                <span className="relative">{s.n}</span>
+                <span className="relative">{n}</span>
               </div>
-              <h3 className="mt-5 font-display text-base font-semibold">{s.t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.d}</p>
+              <h3 className="mt-5 font-display text-base font-semibold">{t(`process.${i + 1}.t`)}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{t(`process.${i + 1}.d`)}</p>
             </Reveal>
           ))}
         </div>
@@ -304,58 +257,41 @@ export function Process() {
 }
 
 /* ---------- WORK ---------- */
-const cases = [
-  {
-    tag: "Fintech · SaaS",
-    title: "Card-issuing dashboard rebuilt for scale.",
-    metric: "+38% activation",
-    sub: "Rebuilt onboarding + first-run.",
-  },
-  {
-    tag: "Cloud · DevTools",
-    title: "Marketing site + docs for a serverless platform.",
-    metric: "×2.4 signups",
-    sub: "Redesign + positioning.",
-  },
-  {
-    tag: "AI · B2B",
-    title: "RAG copilot for a logistics operator.",
-    metric: "−62% ticket time",
-    sub: "From PoC to production in 9 weeks.",
-  },
-  {
-    tag: "Healthtech",
-    title: "Patient app and clinician back-office.",
-    metric: "4.9★ store rating",
-    sub: "Design system + iOS/Android.",
-  },
-];
-
 export function Work() {
+  const { t } = useI18n();
+  const items = [1, 2, 3, 4] as const;
   return (
     <section id="work" className="relative border-t border-border bg-surface/40 py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
-        <SectionHead eyebrow="Selected work" title="Shipped, measured, kept." />
+        <SectionHead eyebrow={t("work.eyebrow")} title={t("work.title")} />
         <div className="mt-14 grid gap-6 md:grid-cols-2">
-          {cases.map((c) => (
+          {items.map((i) => (
             <Link
-              key={c.title}
+              key={i}
               to="/work"
               className="group overflow-hidden rounded-2xl border border-border bg-background transition-colors hover:border-primary/50"
             >
-              <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-primary/25 via-surface-2 to-jade/20">
-                <div className="absolute inset-0 grid-lines opacity-40" />
+              <div className="relative aspect-[16/10] overflow-hidden">
+                <img
+                  src={caseCovers[i - 1]}
+                  alt=""
+                  loading="lazy"
+                  width={1280}
+                  height={800}
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/20 to-background/40" />
                 <div className="absolute right-4 top-4 rounded-full border border-border bg-background/70 px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm">
-                  {c.tag}
+                  {t(`work.${i}.tag`)}
                 </div>
                 <div className="absolute bottom-4 left-4 font-display text-2xl font-semibold text-foreground">
-                  {c.metric}
+                  {t(`work.${i}.m1`)}
                 </div>
               </div>
               <div className="flex items-start justify-between gap-4 p-6">
                 <div>
-                  <h3 className="font-display text-lg font-semibold">{c.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{c.sub}</p>
+                  <h3 className="font-display text-lg font-semibold">{t(`work.${i}.title`)}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{t(`work.${i}.sub`)}</p>
                 </div>
                 <ArrowUpRight className="h-5 w-5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
               </div>
@@ -367,7 +303,7 @@ export function Work() {
             to="/work"
             className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface"
           >
-            See full portfolio <ArrowUpRight className="h-4 w-4" />
+            {t("work.cta.full")} <ArrowUpRight className="h-4 w-4" />
           </Link>
         </div>
       </div>
@@ -376,30 +312,21 @@ export function Work() {
 }
 
 /* ---------- WHY US ---------- */
-const whys = [
-  { t: "Full cycle, one roof", d: "Research, strategy, design, build and growth — no hand-offs." },
-  { t: "Hong Kong base, global reach", d: "Operating across APAC, EU and North America." },
-  { t: "Multilingual delivery", d: "English, Russian and Chinese — no translation loss." },
-  { t: "Senior-only team", d: "You get the people who built it, not who managed it." },
-];
-
 export function WhyUs() {
+  const { t } = useI18n();
   return (
     <section id="about" className="relative py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-12 md:grid-cols-2 md:gap-16">
           <div>
-            <SectionHead eyebrow="Why us" title="A studio, not a body shop." />
-            <p className="mt-6 max-w-md text-muted-foreground">
-              We stay small on purpose. Every project has a senior engineer, a senior designer
-              and a strategy lead — from day one to launch.
-            </p>
+            <SectionHead eyebrow={t("whyus.eyebrow")} title={t("whyus.title")} />
+            <p className="mt-6 max-w-md text-muted-foreground">{t("whyus.lead")}</p>
           </div>
           <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2">
-            {whys.map((w) => (
-              <div key={w.t} className="bg-background p-7">
-                <h3 className="font-display text-base font-semibold">{w.t}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{w.d}</p>
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-background p-7">
+                <h3 className="font-display text-base font-semibold">{t(`whyus.${i}.t`)}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{t(`whyus.${i}.d`)}</p>
               </div>
             ))}
           </div>
@@ -429,42 +356,24 @@ export function TechStrip() {
   );
 }
 
-/* ---------- TESTIMONIALS ---------- */
-const quotes = [
-  {
-    q: "They rebuilt our activation funnel in six weeks. It moved the number that funds our Series A.",
-    n: "Alex Chan",
-    r: "CEO, Ledgerly",
-  },
-  {
-    q: "The rare team that owns strategy and code. We shipped an AI copilot without hiring a PM.",
-    n: "Diana Ivanova",
-    r: "Head of Product, Freightline",
-  },
-  {
-    q: "Clear thinking, sharp design, senior engineering. Not a marketplace vibe.",
-    n: "Michael Wong",
-    r: "Founder, Northlab",
-  },
-];
-
 export function Testimonials() {
+  const { t } = useI18n();
   return (
     <section className="relative py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
-        <SectionHead eyebrow="Testimonials" title="What founders say." />
+        <SectionHead eyebrow={t("testi.eyebrow")} title={t("testi.title")} />
         <div className="mt-14 grid gap-6 md:grid-cols-3">
-          {quotes.map((t) => (
+          {[1, 2, 3].map((i) => (
             <figure
-              key={t.n}
+              key={i}
               className="rounded-2xl border border-border bg-surface/60 p-7 backdrop-blur-sm"
             >
               <blockquote className="font-display text-lg leading-snug tracking-tight">
-                “{t.q}”
+                “{t(`testi.${i}.q`)}”
               </blockquote>
               <figcaption className="mt-6 text-sm">
-                <div className="font-medium text-foreground">{t.n}</div>
-                <div className="text-muted-foreground">{t.r}</div>
+                <div className="font-medium text-foreground">{t(`testi.${i}.n`)}</div>
+                <div className="text-muted-foreground">{t(`testi.${i}.r`)}</div>
               </figcaption>
             </figure>
           ))}
@@ -476,6 +385,7 @@ export function Testimonials() {
 
 /* ---------- CTA BAND ---------- */
 export function CtaBand() {
+  const { t } = useI18n();
   return (
     <section className="relative overflow-hidden border-t border-border">
       <div className="pointer-events-none absolute inset-0 grid-lines opacity-40" />
@@ -483,15 +393,15 @@ export function CtaBand() {
       <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-32">
         <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <h2 className="max-w-2xl font-display text-4xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-            Let&rsquo;s build
+            {t("ctaband.a")}
             <br />
-            your <span className="text-primary">product.</span>
+            {t("ctaband.b")} <span className="text-primary">{t("ctaband.hl")}</span>
           </h2>
           <Link
             to="/contact"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground shadow-[0_10px_40px_-10px_var(--color-primary)] transition-transform hover:-translate-y-0.5"
           >
-            Start a project <ArrowUpRight className="h-4 w-4" />
+            {t("ctaband.btn")} <ArrowUpRight className="h-4 w-4" />
           </Link>
         </div>
       </div>
