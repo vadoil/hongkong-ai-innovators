@@ -91,13 +91,13 @@ export function Hero() {
             </div>
 
             <h1
-              className="font-display text-[44px] font-semibold leading-[0.98] tracking-[-0.03em] sm:text-6xl md:text-7xl lg:text-[86px] reveal reveal-in"
+              className="font-display text-[34px] font-semibold leading-[1.02] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-[64px] reveal reveal-in [text-wrap:balance]"
               style={{ animationDelay: "0.08s" }}
             >
               <span className="block overflow-hidden">
                 <span className="inline-block animate-text-rise">{t("hero.title.a")}</span>
               </span>
-              <span className="block overflow-hidden">
+              <span className="block overflow-hidden whitespace-nowrap">
                 <span
                   className="inline-block animate-text-rise"
                   style={{ animationDelay: "0.12s" }}
