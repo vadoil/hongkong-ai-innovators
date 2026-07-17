@@ -13,7 +13,7 @@ git reset --hard "origin/$BRANCH"
 
 echo "==> install deps (bun)"
 export PATH="$HOME/.bun/bin:$PATH"
-bun install --frozen-lockfile
+bun install
 
 echo "==> ensure better-sqlite3 (prebuilt via npm)"
 npm i --no-save --omit=dev better-sqlite3 >/dev/null 2>&1 || true
