@@ -11,6 +11,12 @@ import {
   PenTool,
   Cloud,
   Rocket,
+  Sparkles,
+  Cpu,
+  Bot,
+  Braces,
+  Zap,
+  Globe2,
 } from "lucide-react";
 import caseFintech from "@/assets/case-fintech.jpg";
 import caseCloud from "@/assets/case-cloud.jpg";
@@ -25,80 +31,140 @@ export const caseCovers = [caseFintech, caseCloud, caseAi, caseHealth, caseEcom,
 export function Hero() {
   const { t } = useI18n();
   return (
-    <section className="relative overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32">
-      {/* video background — AI / tech visuals */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <video
-          className="absolute left-1/2 top-1/2 h-full w-full min-h-full min-w-full -translate-x-1/2 -translate-y-1/2 object-cover opacity-60"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="https://images.pexels.com/videos/3129957/free-video-3129957.jpg?auto=compress&cs=tinysrgb&w=1600"
-        >
-          <source
-            src="https://videos.pexels.com/video-files/3129957/3129957-hd_1920_1080_25fps.mp4"
-            type="video/mp4"
-          />
-          <source
-            src="https://videos.pexels.com/video-files/6963744/6963744-hd_1920_1080_25fps.mp4"
-            type="video/mp4"
-          />
-        </video>
-        {/* readability wash — theme aware */}
-        <div className="absolute inset-0 bg-background/70 backdrop-blur-[2px]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
+    <section className="relative overflow-hidden pt-28 pb-24 md:pt-36 md:pb-32">
+      {/* Aurora layers */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-0 grid-lines opacity-40" />
+        <div className="absolute -top-40 left-1/2 h-[720px] w-[1200px] -translate-x-1/2 glow-blue animate-aurora" />
+        <div
+          className="absolute -right-40 top-20 h-[520px] w-[520px] glow-jade animate-aurora"
+          style={{ animationDelay: "-4s" }}
+        />
+        <div
+          className="absolute -left-40 top-60 h-[480px] w-[480px] glow-magenta animate-aurora"
+          style={{ animationDelay: "-8s" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
       </div>
-      {/* glows */}
-      <div className="pointer-events-none absolute inset-0 grid-lines opacity-40" />
-      <div className="pointer-events-none absolute left-1/2 top-24 h-[520px] w-[900px] -translate-x-1/2 glow-blue animate-float" />
-      <div className="pointer-events-none absolute right-0 top-40 h-[420px] w-[420px] glow-jade animate-float" style={{ animationDelay: "-3s" }} />
-      <AiNetwork />
 
       <div className="relative mx-auto max-w-7xl px-6">
-        <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm reveal reveal-in">
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-jade" />
-          {t("hero.badge")}
-        </div>
-        <h1 className="max-w-4xl font-display text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl md:text-7xl lg:text-[88px] reveal reveal-in" style={{ animationDelay: "0.08s" }}>
-          {t("hero.title.a")}
-          <br />
-          {t("hero.title.b")}{" "}
-          <span className="bg-gradient-to-r from-primary via-jade to-primary bg-clip-text text-transparent animate-gradient-pan">
-            {t("hero.title.c")}
-          </span>
-        </h1>
-        <p className="mt-6 max-w-2xl text-base text-muted-foreground md:text-lg reveal reveal-in" style={{ animationDelay: "0.18s" }}>
-          {t("hero.lead")}
-        </p>
-
-        <div className="mt-10 flex flex-wrap items-center gap-3 reveal reveal-in" style={{ animationDelay: "0.28s" }}>
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-[0_10px_40px_-10px_var(--color-primary)] transition-transform hover:-translate-y-0.5"
-          >
-            {t("hero.cta.primary")} <ArrowUpRight className="h-4 w-4" />
-          </Link>
-          <Link
-            to="/work"
-            className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface"
-          >
-            {t("hero.cta.secondary")}
-          </Link>
-        </div>
-
-        {/* trust strip */}
-        <div className="mt-20 reveal reveal-in" style={{ animationDelay: "0.4s" }}>
-          <div className="text-xs uppercase tracking-widest text-muted-foreground">
-            {t("hero.trust")}
-          </div>
-          <div className="mt-4 flex flex-wrap items-center gap-x-10 gap-y-4 opacity-70">
-            {["FINTECH", "SAAS", "CLOUD", "LOGISTICS", "HEALTHTECH", "AI/ML"].map((l) => (
-              <span key={l} className="font-display text-sm tracking-widest text-muted-foreground">
-                {l}
+        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-8">
+          {/* Copy */}
+          <div className="lg:col-span-7">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm reveal reveal-in">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-jade animate-ping-soft" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-jade" />
               </span>
-            ))}
+              {t("hero.badge")}
+            </div>
+
+            <h1
+              className="font-display text-[44px] font-semibold leading-[0.98] tracking-[-0.03em] sm:text-6xl md:text-7xl lg:text-[86px] reveal reveal-in"
+              style={{ animationDelay: "0.08s" }}
+            >
+              <span className="block overflow-hidden">
+                <span className="inline-block animate-text-rise">{t("hero.title.a")}</span>
+              </span>
+              <span className="block overflow-hidden">
+                <span
+                  className="inline-block animate-text-rise"
+                  style={{ animationDelay: "0.12s" }}
+                >
+                  {t("hero.title.b")}{" "}
+                </span>
+                <span
+                  className="inline-block bg-gradient-to-r from-primary via-jade to-primary bg-clip-text text-transparent animate-gradient-pan animate-text-rise"
+                  style={{ animationDelay: "0.22s", backgroundSize: "200% 100%" }}
+                >
+                  {t("hero.title.c")}
+                </span>
+              </span>
+            </h1>
+
+            <p
+              className="mt-6 max-w-2xl text-base text-muted-foreground md:text-lg reveal reveal-in"
+              style={{ animationDelay: "0.32s" }}
+            >
+              {t("hero.lead")}
+            </p>
+
+            <div
+              className="mt-10 flex flex-wrap items-center gap-3 reveal reveal-in"
+              style={{ animationDelay: "0.42s" }}
+            >
+              <Link
+                to="/contact"
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-primary px-6 py-3.5 text-sm font-medium text-primary-foreground shadow-[0_18px_50px_-12px_var(--color-primary)] transition-transform hover:-translate-y-0.5"
+              >
+                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                <span className="relative">{t("hero.cta.primary")}</span>
+                <ArrowUpRight className="relative h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+              <Link
+                to="/work"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/40 px-6 py-3.5 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-surface"
+              >
+                {t("hero.cta.secondary")}
+              </Link>
+            </div>
+
+            {/* Metrics */}
+            <div
+              className="mt-14 grid max-w-xl grid-cols-3 gap-6 reveal reveal-in"
+              style={{ animationDelay: "0.55s" }}
+            >
+              {[
+                { k: "120+", v: t("hero.trust") },
+                { k: "5★", v: "Clutch / G2" },
+                { k: "24/7", v: "HK · APAC · EU" },
+              ].map((m) => (
+                <div key={m.k} className="border-l border-border pl-4">
+                  <div className="font-display text-2xl font-semibold tracking-tight md:text-3xl">
+                    {m.k}
+                  </div>
+                  <div className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">
+                    {m.v}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Visual — orbiting AI core */}
+          <div className="relative lg:col-span-5">
+            <AiCore />
+          </div>
+        </div>
+
+        {/* Trust marquee */}
+        <div
+          className="mt-20 reveal reveal-in"
+          style={{ animationDelay: "0.65s" }}
+        >
+          <div className="relative overflow-hidden mask-fade-x">
+            <div className="flex w-max animate-marquee gap-14 whitespace-nowrap opacity-70">
+              {[...Array(2)].flatMap((_, r) =>
+                [
+                  "FINTECH",
+                  "SAAS",
+                  "CLOUD",
+                  "LOGISTICS",
+                  "HEALTHTECH",
+                  "AI / ML",
+                  "COMMERCE",
+                  "MEDIA",
+                  "EDUCATION",
+                ].map((l, i) => (
+                  <span
+                    key={`${r}-${i}`}
+                    className="font-display text-sm tracking-[0.28em] text-muted-foreground"
+                  >
+                    {l}
+                  </span>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -106,63 +172,77 @@ export function Hero() {
   );
 }
 
-/* AI neural-network animated visual */
-function AiNetwork() {
-  // Fixed positions for a clean, on-brand constellation
-  const nodes = [
-    { x: 80, y: 120 }, { x: 220, y: 60 }, { x: 360, y: 180 },
-    { x: 520, y: 90 }, { x: 680, y: 220 }, { x: 820, y: 130 },
-    { x: 940, y: 260 }, { x: 1080, y: 90 }, { x: 1180, y: 220 },
-    { x: 160, y: 300 }, { x: 420, y: 340 }, { x: 760, y: 380 }, { x: 1020, y: 360 },
+/* AI core — layered orbits, satellites, pulsing neural core */
+function AiCore() {
+  const satellites = [
+    { Icon: Cpu,    r: 140, delay: "0s"    },
+    { Icon: Bot,    r: 140, delay: "-5.5s" },
+    { Icon: Braces, r: 140, delay: "-11s"  },
+    { Icon: Zap,    r: 140, delay: "-16.5s"},
   ];
-  const edges = [
-    [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8],
-    [0, 9], [2, 9], [3, 10], [4, 10], [5, 11], [6, 11], [7, 12], [8, 12],
-    [9, 10], [10, 11], [11, 12],
+  const outer = [
+    { Icon: Globe2,   r: 210, delay: "-2s"  },
+    { Icon: Cloud,    r: 210, delay: "-11s" },
+    { Icon: Sparkles, r: 210, delay: "-20s" },
   ];
   return (
-    <svg
+    <div
       aria-hidden
-      className="pointer-events-none absolute inset-x-0 top-16 mx-auto h-[520px] w-full max-w-[1280px] opacity-70 md:opacity-90"
-      viewBox="0 0 1280 480"
-      preserveAspectRatio="xMidYMid slice"
+      className="relative mx-auto aspect-square w-full max-w-[520px]"
     >
-      <defs>
-        <linearGradient id="edge" x1="0" x2="1">
-          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0" />
-          <stop offset="50%" stopColor="var(--color-primary)" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="var(--color-jade)" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      {edges.map(([a, b], i) => (
-        <line
-          key={i}
-          x1={nodes[a].x}
-          y1={nodes[a].y}
-          x2={nodes[b].x}
-          y2={nodes[b].y}
-          stroke="url(#edge)"
-          strokeWidth="1"
-          strokeDasharray="4 8"
-          className="animate-dash"
-          style={{ animationDelay: `${(i % 6) * -0.7}s` }}
+      {/* Faint outer disc */}
+      <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,oklch(0.62_0.19_258/0.18),transparent_60%)]" />
+
+      {/* Rings */}
+      <div className="absolute inset-[6%] rounded-full border border-border/70 animate-spin-slow" />
+      <div className="absolute inset-[18%] rounded-full border border-dashed border-primary/30 animate-spin-reverse" />
+      <div className="absolute inset-[32%] rounded-full border border-border/60 animate-spin-slow" />
+
+      {/* Orbits: outer satellites */}
+      <div className="absolute left-1/2 top-1/2 h-0 w-0">
+        {outer.map(({ Icon, r, delay }, i) => (
+          <span
+            key={`o-${i}`}
+            className="absolute -translate-x-1/2 -translate-y-1/2 animate-orbit"
+            style={{ ["--orbit-r" as string]: `${r}px`, animationDelay: delay, animationDuration: "34s" }}
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background/70 text-primary shadow-[0_10px_30px_-14px_var(--color-primary)] backdrop-blur-sm">
+              <Icon className="h-4 w-4" />
+            </span>
+          </span>
+        ))}
+      </div>
+
+      {/* Orbits: inner satellites */}
+      <div className="absolute left-1/2 top-1/2 h-0 w-0">
+        {satellites.map(({ Icon, r, delay }, i) => (
+          <span
+            key={`i-${i}`}
+            className="absolute -translate-x-1/2 -translate-y-1/2 animate-orbit"
+            style={{ ["--orbit-r" as string]: `${r}px`, animationDelay: delay }}
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-primary/40 bg-surface/80 text-primary shadow-[0_10px_30px_-10px_var(--color-primary)] backdrop-blur-sm">
+              <Icon className="h-5 w-5" />
+            </span>
+          </span>
+        ))}
+      </div>
+
+      {/* Core */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="relative flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br from-primary to-jade shadow-[0_25px_80px_-10px_var(--color-primary)]">
+          <span className="absolute inset-0 rounded-full bg-primary/40 blur-xl animate-pulse-node" />
+          <span className="absolute inset-2 rounded-full border border-primary-foreground/30" />
+          <Sparkles className="relative h-9 w-9 text-primary-foreground" />
+        </div>
+        {/* Ping halos */}
+        <span className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/40 animate-ping-soft" />
+        <span
+          className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-jade/40 animate-ping-soft"
+          style={{ animationDelay: "-1.3s" }}
         />
-      ))}
-      {nodes.map((n, i) => (
-        <g key={i}>
-          <circle
-            cx={n.x}
-            cy={n.y}
-            r="10"
-            fill="var(--color-primary)"
-            opacity="0.12"
-            className="animate-pulse-node"
-            style={{ animationDelay: `${(i % 5) * -0.5}s`, transformOrigin: `${n.x}px ${n.y}px` }}
-          />
-          <circle cx={n.x} cy={n.y} r="2.4" fill="var(--color-primary)" />
-        </g>
-      ))}
-    </svg>
+      </div>
+    </div>
   );
 }
 
