@@ -12,6 +12,7 @@ import {
   Testimonials,
   CtaBand,
 } from "@/components/site/Sections";
+import { ClientsMarquee, Awards, BigStats, Team, EstimateTeaser } from "@/components/site/LuxeExtras";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -23,13 +24,18 @@ function Index() {
       <Header />
       <main>
         <Hero />
+        <ClientsMarquee />
         <Pillars />
+        <BigStats />
         <Services />
         <Process />
         <Work />
+        <Awards />
         <WhyUs />
+        <Team />
         <TechStrip />
         <Testimonials />
+        <EstimateTeaser />
         <CtaBand />
       </main>
       <Footer />
