@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
+import { Reveal } from "@/lib/reveal";
 import {
   ArrowUpRight,
   Search,
@@ -191,12 +192,14 @@ export function Pillars() {
           lead="From the first user interview to the launch dashboard — no hand-offs, no dropped context."
         />
         <div className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2 lg:grid-cols-4">
-          {pillars.map((p) => (
-            <div key={p.title} className="group relative bg-background p-8 transition-colors hover:bg-surface">
-              <p.icon className="h-6 w-6 text-primary" />
+          {pillars.map((p, i) => (
+            <Reveal key={p.title} delay={i * 0.08} className="group relative bg-background p-8 transition-colors hover:bg-surface">
+              <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:scale-110">
+                <p.icon className="h-5 w-5 transition-transform duration-500 group-hover:rotate-6 group-hover:animate-icon-bob" />
+              </div>
               <h3 className="mt-6 font-display text-lg font-semibold">{p.title}</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -244,19 +247,23 @@ export function Services() {
       <div className="mx-auto max-w-7xl px-6">
         <SectionHead eyebrow="Services" title="Deep on every stage." />
         <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((s) => (
-            <Link
-              key={s.title}
-              to="/contact"
-              className="group relative overflow-hidden rounded-2xl border border-border bg-background p-7 transition-all hover:border-primary/50 hover:bg-surface"
-            >
-              <s.icon className="h-6 w-6 text-primary" />
-              <h3 className="mt-6 font-display text-xl font-semibold">{s.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
-              <div className="mt-6 inline-flex items-center gap-1 text-sm text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                Learn more <ArrowUpRight className="h-4 w-4" />
-              </div>
-            </Link>
+          {services.map((s, i) => (
+            <Reveal key={s.title} delay={i * 0.06}>
+              <Link
+                to="/contact"
+                className="group relative block overflow-hidden rounded-2xl border border-border bg-background p-7 transition-all duration-500 hover:-translate-y-1 hover:border-primary/50 hover:bg-surface hover:shadow-[0_20px_60px_-30px_var(--color-primary)]"
+              >
+                <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-500 group-hover:scale-110">
+                  <s.icon className="h-5 w-5 transition-transform duration-500 group-hover:rotate-6 group-hover:animate-icon-bob" />
+                </div>
+                <h3 className="mt-6 font-display text-xl font-semibold">{s.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+                <div className="mt-6 inline-flex items-center gap-1 text-sm text-primary opacity-0 -translate-x-2 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100">
+                  Learn more <ArrowUpRight className="h-4 w-4" />
+                </div>
+              </Link>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -280,14 +287,15 @@ export function Process() {
         <SectionHead eyebrow="Process" title="Five stages. One team." />
         <div className="relative mt-14 grid gap-6 md:grid-cols-5">
           <div className="pointer-events-none absolute left-0 right-0 top-6 hidden h-px bg-gradient-to-r from-transparent via-border to-transparent md:block" />
-          {steps.map((s) => (
-            <div key={s.n} className="relative">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-background font-display text-sm text-primary">
-                {s.n}
+          {steps.map((s, i) => (
+            <Reveal key={s.n} delay={i * 0.1} className="group relative">
+              <div className="relative flex h-12 w-12 items-center justify-center rounded-full border border-border bg-background font-display text-sm text-primary">
+                <span className="absolute inset-0 rounded-full bg-primary/10 blur-md opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <span className="relative">{s.n}</span>
               </div>
               <h3 className="mt-5 font-display text-base font-semibold">{s.t}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{s.d}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
