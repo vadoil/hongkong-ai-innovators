@@ -501,14 +501,14 @@ function SectionHead({
 }) {
   return (
     <div className="max-w-3xl">
-      <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
-        <span className="inline-block h-px w-8 bg-primary" />
-        {eyebrow}
+      <div className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.32em] text-muted-foreground">
+        <span className="relative inline-block h-px w-10 bg-gradient-to-r from-transparent via-primary to-transparent" />
+        <span className="text-primary">{eyebrow}</span>
       </div>
-      <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight md:text-5xl">
-        {title}
+      <h2 className="mt-5 font-display text-4xl font-semibold leading-[1.02] tracking-[-0.03em] md:text-6xl">
+        <span className="text-sheen">{title}</span>
       </h2>
-      {lead ? <p className="mt-4 text-muted-foreground md:text-lg">{lead}</p> : null}
+      {lead ? <p className="mt-5 text-muted-foreground md:text-lg">{lead}</p> : null}
     </div>
   );
 }
