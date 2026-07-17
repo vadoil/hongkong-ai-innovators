@@ -30,10 +30,16 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="inline-block h-2 w-2 rounded-full bg-primary shadow-[0_0_16px_var(--color-primary)]" />
+        <Link to="/" className="flex items-center gap-2.5" aria-label="CWH.HK">
+          <img
+            src="/favicon.png"
+            alt=""
+            width={28}
+            height={28}
+            className="h-7 w-7 drop-shadow-[0_0_18px_color-mix(in_oklab,var(--color-primary)_45%,transparent)]"
+          />
           <span className="font-display text-base font-semibold tracking-tight text-foreground">
-            Meridian<span className="text-primary">.hk</span>
+            CWH<span className="text-primary">.HK</span>
           </span>
         </Link>
 

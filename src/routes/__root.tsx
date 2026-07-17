@@ -80,13 +80,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Meridian HK — Full-cycle product studio from Hong Kong" },
+      { title: "CWH.HK — Full-cycle product studio from Hong Kong" },
       {
         name: "description",
         content:
           "Research, strategy, design and engineering for software and cloud teams. A Hong Kong–based product studio building websites, apps and cloud services end-to-end.",
       },
-      { property: "og:title", content: "Meridian HK — Full-cycle product studio from Hong Kong" },
+      { property: "og:title", content: "CWH.HK — Full-cycle product studio from Hong Kong" },
       {
         property: "og:description",
         content:
@@ -94,7 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Meridian HK — Full-cycle product studio from Hong Kong" },
+      { name: "twitter:title", content: "CWH.HK — Full-cycle product studio from Hong Kong" },
       { name: "description", content: "Hong Kong Digital Masters is a web application for a leading digital agency specializing in website and app development." },
       { property: "og:description", content: "Hong Kong Digital Masters is a web application for a leading digital agency specializing in website and app development." },
       { name: "twitter:description", content: "Hong Kong Digital Masters is a web application for a leading digital agency specializing in website and app development." },
@@ -106,7 +106,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

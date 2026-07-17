@@ -8,9 +8,9 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — Meridian HK" },
+      { title: "About — CWH.HK" },
       { name: "description", content: "A senior product studio based in Hong Kong. Full cycle, one roof, multilingual delivery across APAC, EU and North America." },
-      { property: "og:title", content: "About — Meridian HK" },
+      { property: "og:title", content: "About — CWH.HK" },
       { property: "og:description", content: "A senior product studio based in Hong Kong. Full cycle, one roof." },
     ],
   }),

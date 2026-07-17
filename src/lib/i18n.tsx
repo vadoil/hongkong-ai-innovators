@@ -202,7 +202,7 @@ const zh: Dict = {
   "contact.f.send": "发送",
   "contact.f.sending": "发送中…",
   "contact.f.success": "已收到——我们会在一个工作日内回复。",
-  "contact.office.title": "Meridian HK · 总部办公室",
+  "contact.office.title": "CWH.HK · 总部办公室",
   "contact.office.hours": "周一至周五 · 09:30 – 19:00 (HKT)",
   "contact.back": "← 返回首页",
 };
@@ -392,7 +392,7 @@ const en: Dict = {
   "contact.f.send": "Send",
   "contact.f.sending": "Sending…",
   "contact.f.success": "Thanks — we'll reply within one business day.",
-  "contact.office.title": "Meridian HK — Head office",
+  "contact.office.title": "CWH.HK — Head office",
   "contact.office.hours": "Mon – Fri · 09:30 – 19:00 HKT",
   "contact.back": "← Back to home",
 };
@@ -582,7 +582,7 @@ const ru: Dict = {
   "contact.f.send": "Отправить",
   "contact.f.sending": "Отправка…",
   "contact.f.success": "Спасибо — ответим в течение одного рабочего дня.",
-  "contact.office.title": "Meridian HK — Головной офис",
+  "contact.office.title": "CWH.HK — Головной офис",
   "contact.office.hours": "Пн – Пт · 09:30 – 19:00 HKT",
   "contact.back": "← На главную",
 };
