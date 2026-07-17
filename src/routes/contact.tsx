@@ -34,11 +34,23 @@ function ContactPage() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setPending(true);
-    // TODO: wire to Supabase `leads` table in step 3
-    await new Promise((r) => setTimeout(r, 500));
-    toast.success(t("contact.f.success"));
-    (e.target as HTMLFormElement).reset();
-    setPending(false);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const payload = Object.fromEntries(fd.entries());
+    try {
+      const res = await fetch("/api/public/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      toast.success(t("contact.f.success"));
+      form.reset();
+    } catch (err) {
+      toast.error(String((err as Error).message || "error"));
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
