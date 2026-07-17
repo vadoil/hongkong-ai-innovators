@@ -11,7 +11,7 @@ export function Footer() {
             <div className="flex items-center gap-2">
               <span className="inline-block h-2 w-2 rounded-full bg-primary" />
               <span className="font-display text-lg font-semibold tracking-tight">
-                Meridian<span className="text-primary">.hk</span>
+                CWH<span className="text-primary">.hk</span>
               </span>
             </div>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">{t("footer.tagline")}</p>
@@ -33,7 +33,7 @@ export function Footer() {
               {t("footer.contact")}
             </div>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-              <li>hello@meridian.hk</li>
+              <li>hello@cwh.hk</li>
               <li>Suite 2201, 22/F, Tower 1,</li>
               <li>Admiralty Centre, 18 Harcourt Rd,</li>
               <li>Admiralty, Hong Kong SAR</li>
@@ -46,7 +46,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:items-center">
-          <div>© {new Date().getFullYear()} Meridian HK. Hong Kong.</div>
+          <div>© {new Date().getFullYear()} CWH.HK. Hong Kong.</div>
           <div className="flex gap-6">
             <a href="#" className="hover:text-foreground">{t("footer.privacy")}</a>
             <a href="#" className="hover:text-foreground">{t("footer.terms")}</a>

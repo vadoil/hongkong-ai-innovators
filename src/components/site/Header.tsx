@@ -33,7 +33,7 @@ export function Header() {
         <Link to="/" className="flex items-center gap-2">
           <span className="inline-block h-2 w-2 rounded-full bg-primary shadow-[0_0_16px_var(--color-primary)]" />
           <span className="font-display text-base font-semibold tracking-tight text-foreground">
-            Meridian<span className="text-primary">.hk</span>
+            CWH<span className="text-primary">.hk</span>
           </span>
         </Link>
 

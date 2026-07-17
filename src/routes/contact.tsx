@@ -9,12 +9,12 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Meridian HK" },
+      { title: "Contact — CWH.HK" },
       {
         name: "description",
         content: "Tell us about your product. We reply within one business day.",
       },
-      { property: "og:title", content: "Contact — Meridian HK" },
+      { property: "og:title", content: "Contact — CWH.HK" },
       {
         property: "og:description",
         content: "Tell us about your product. We reply within one business day.",
@@ -62,8 +62,8 @@ function ContactPage() {
               <div className="mt-10 space-y-5 text-sm">
                 <div className="flex items-start gap-3">
                   <Mail className="mt-0.5 h-4 w-4 text-primary" />
-                  <a href="mailto:hello@meridian.hk" className="hover:text-primary">
-                    hello@meridian.hk
+                  <a href="mailto:hello@cwh.hk" className="hover:text-primary">
+                    hello@cwh.hk
                   </a>
                 </div>
                 <div className="flex items-start gap-3">
@@ -90,7 +90,7 @@ function ContactPage() {
               </div>
               <div className="mt-8 overflow-hidden rounded-2xl border border-border">
                 <iframe
-                  title="Meridian HK office — Admiralty, Hong Kong"
+                  title="CWH.HK office — Admiralty, Hong Kong"
                   src="https://www.openstreetmap.org/export/embed.html?bbox=114.1625%2C22.2755%2C114.1685%2C22.2795&layer=mapnik&marker=22.2775%2C114.1655"
                   className="h-56 w-full"
                   loading="lazy"
