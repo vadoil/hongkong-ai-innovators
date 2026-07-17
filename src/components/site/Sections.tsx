@@ -24,6 +24,8 @@ import caseAi from "@/assets/case-ai.jpg";
 import caseHealth from "@/assets/case-health.jpg";
 import caseEcom from "@/assets/case-ecom.jpg";
 import caseVoice from "@/assets/case-voice.jpg";
+import heroUniverse from "@/assets/hero-universe.jpg";
+import patternCloud from "@/assets/pattern-cloud.jpg";
 
 export const caseCovers = [caseFintech, caseCloud, caseAi, caseHealth, caseEcom, caseVoice];
 
@@ -32,19 +34,33 @@ export function Hero() {
   const { t } = useI18n();
   return (
     <section className="relative overflow-hidden pt-28 pb-24 md:pt-36 md:pb-32">
-      {/* Aurora layers */}
+      {/* Backdrop: data universe photo + aurora + gold cloud pattern */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 grid-lines opacity-40" />
+        <img
+          src={heroUniverse}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover opacity-[0.35] mix-blend-screen animate-drift-slow mask-radial-fade"
+        />
+        <div className="absolute inset-0 grid-lines opacity-30" />
         <div className="absolute -top-40 left-1/2 h-[720px] w-[1200px] -translate-x-1/2 glow-blue animate-aurora" />
         <div
-          className="absolute -right-40 top-20 h-[520px] w-[520px] glow-jade animate-aurora"
+          className="absolute -right-40 top-20 h-[520px] w-[520px] glow-red animate-aurora"
           style={{ animationDelay: "-4s" }}
         />
         <div
-          className="absolute -left-40 top-60 h-[480px] w-[480px] glow-magenta animate-aurora"
+          className="absolute -left-40 top-60 h-[480px] w-[480px] glow-gold animate-aurora"
           style={{ animationDelay: "-8s" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
+        <div
+          className="absolute right-0 bottom-0 h-[420px] w-[520px] glow-jade animate-aurora"
+          style={{ animationDelay: "-12s" }}
+        />
+        <img
+          src={patternCloud}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover opacity-[0.06] mix-blend-screen"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6">
@@ -115,9 +131,9 @@ export function Hero() {
               style={{ animationDelay: "0.55s" }}
             >
               {[
-                { k: "120+", v: t("hero.trust") },
-                { k: "5★", v: "Clutch / G2" },
-                { k: "24/7", v: "HK · APAC · EU" },
+                { k: t("hero.m1.k"), v: t("hero.m1.v") },
+                { k: t("hero.m2.k"), v: t("hero.m2.v") },
+                { k: t("hero.m3.k"), v: t("hero.m3.v") },
               ].map((m) => (
                 <div key={m.k} className="border-l border-border pl-4">
                   <div className="font-display text-2xl font-semibold tracking-tight md:text-3xl">
@@ -131,9 +147,9 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Visual — orbiting AI core */}
+          {/* Visual — two universes bridged by AI */}
           <div className="relative lg:col-span-5">
-            <AiCore />
+            <UniverseCore labelA={t("hero.universe.a")} labelB={t("hero.universe.b")} link={t("hero.universe.link")} />
           </div>
         </div>
 
@@ -145,17 +161,7 @@ export function Hero() {
           <div className="relative overflow-hidden mask-fade-x">
             <div className="flex w-max animate-marquee gap-14 whitespace-nowrap opacity-70">
               {[...Array(2)].flatMap((_, r) =>
-                [
-                  "FINTECH",
-                  "SAAS",
-                  "CLOUD",
-                  "LOGISTICS",
-                  "HEALTHTECH",
-                  "AI / ML",
-                  "COMMERCE",
-                  "MEDIA",
-                  "EDUCATION",
-                ].map((l, i) => (
+                t("hero.marquee").split(" · ").map((l, i) => (
                   <span
                     key={`${r}-${i}`}
                     className="font-display text-sm tracking-[0.28em] text-muted-foreground"
@@ -172,75 +178,176 @@ export function Hero() {
   );
 }
 
-/* AI core — layered orbits, satellites, pulsing neural core */
-function AiCore() {
-  const satellites = [
-    { Icon: Cpu,    r: 140, delay: "0s"    },
-    { Icon: Bot,    r: 140, delay: "-5.5s" },
-    { Icon: Braces, r: 140, delay: "-11s"  },
-    { Icon: Zap,    r: 140, delay: "-16.5s"},
-  ];
-  const outer = [
-    { Icon: Globe2,   r: 210, delay: "-2s"  },
-    { Icon: Cloud,    r: 210, delay: "-11s" },
-    { Icon: Sparkles, r: 210, delay: "-20s" },
-  ];
+/* UniverseCore — two glowing orbs (data + product) bridged by AI dataflow */
+function UniverseCore({ labelA, labelB, link }: { labelA: string; labelB: string; link: string }) {
+  const packets = [0, 1, 2, 3, 4];
   return (
-    <div
-      aria-hidden
-      className="relative mx-auto aspect-square w-full max-w-[520px]"
-    >
-      {/* Faint outer disc */}
-      <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,oklch(0.62_0.19_258/0.18),transparent_60%)]" />
-
-      {/* Rings */}
-      <div className="absolute inset-[6%] rounded-full border border-border/70 animate-spin-slow" />
-      <div className="absolute inset-[18%] rounded-full border border-dashed border-primary/30 animate-spin-reverse" />
-      <div className="absolute inset-[32%] rounded-full border border-border/60 animate-spin-slow" />
-
-      {/* Orbits: outer satellites */}
-      <div className="absolute left-1/2 top-1/2 h-0 w-0">
-        {outer.map(({ Icon, r, delay }, i) => (
-          <span
-            key={`o-${i}`}
-            className="absolute -translate-x-1/2 -translate-y-1/2 animate-orbit"
-            style={{ ["--orbit-r" as string]: `${r}px`, animationDelay: delay, animationDuration: "34s" }}
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background/70 text-primary shadow-[0_10px_30px_-14px_var(--color-primary)] backdrop-blur-sm">
-              <Icon className="h-4 w-4" />
-            </span>
-          </span>
-        ))}
+    <div aria-hidden className="relative mx-auto aspect-square w-full max-w-[560px]">
+      {/* Twinkling starfield */}
+      <div className="absolute inset-0">
+        {Array.from({ length: 26 }).map((_, i) => {
+          const top = (i * 37) % 100;
+          const left = (i * 61) % 100;
+          const size = (i % 3) + 1.5;
+          const delay = (i % 7) * 0.4;
+          return (
+            <span
+              key={i}
+              className="absolute rounded-full bg-foreground/80 animate-twinkle"
+              style={{
+                top: `${top}%`,
+                left: `${left}%`,
+                width: `${size}px`,
+                height: `${size}px`,
+                animationDelay: `${delay}s`,
+              }}
+            />
+          );
+        })}
       </div>
 
-      {/* Orbits: inner satellites */}
-      <div className="absolute left-1/2 top-1/2 h-0 w-0">
-        {satellites.map(({ Icon, r, delay }, i) => (
-          <span
-            key={`i-${i}`}
-            className="absolute -translate-x-1/2 -translate-y-1/2 animate-orbit"
-            style={{ ["--orbit-r" as string]: `${r}px`, animationDelay: delay }}
-          >
-            <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-primary/40 bg-surface/80 text-primary shadow-[0_10px_30px_-10px_var(--color-primary)] backdrop-blur-sm">
-              <Icon className="h-5 w-5" />
-            </span>
-          </span>
-        ))}
-      </div>
+      {/* Faint mandala rings */}
+      <div className="absolute inset-[8%] rounded-full border border-cn-gold/20 animate-spin-slow" />
+      <div className="absolute inset-[22%] rounded-full border border-dashed border-primary/25 animate-spin-reverse" />
 
-      {/* Core */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div className="relative flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br from-primary to-jade shadow-[0_25px_80px_-10px_var(--color-primary)]">
-          <span className="absolute inset-0 rounded-full bg-primary/40 blur-xl animate-pulse-node" />
-          <span className="absolute inset-2 rounded-full border border-primary-foreground/30" />
-          <Sparkles className="relative h-9 w-9 text-primary-foreground" />
+      {/* Orb A — Data universe (crimson + gold) */}
+      <div className="absolute left-[6%] top-[52%] -translate-y-1/2">
+        <div className="relative">
+          <span className="absolute -inset-10 rounded-full glow-red animate-pulse-node" />
+          <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-[radial-gradient(circle_at_30%_30%,oklch(0.82_0.15_85),oklch(0.55_0.22_27)_55%,oklch(0.22_0.08_27)_100%)] shadow-[0_25px_80px_-10px_oklch(0.63_0.22_27/0.7)]">
+            <span className="absolute inset-1 rounded-full border border-cn-gold/40" />
+            <span className="absolute inset-3 rounded-full border border-dashed border-cn-gold/30 animate-spin-slow" />
+            <Cpu className="relative h-8 w-8 text-cn-gold" />
+          </div>
+          <span className="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full border border-cn-red/40 animate-ping-soft" />
+          {/* Orbiting satellites around A */}
+          <div className="absolute left-1/2 top-1/2 h-0 w-0">
+            {[
+              { Icon: Braces, delay: "0s" },
+              { Icon: Globe2, delay: "-8s" },
+              { Icon: Cloud, delay: "-16s" },
+            ].map(({ Icon, delay }, i) => (
+              <span
+                key={`a-${i}`}
+                className="absolute -translate-x-1/2 -translate-y-1/2 animate-orbit"
+                style={{ ["--orbit-r" as string]: "82px", animationDelay: delay, animationDuration: "24s" }}
+              >
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-cn-gold/40 bg-background/70 text-cn-gold backdrop-blur-sm">
+                  <Icon className="h-3.5 w-3.5" />
+                </span>
+              </span>
+            ))}
+          </div>
         </div>
-        {/* Ping halos */}
-        <span className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/40 animate-ping-soft" />
-        <span
-          className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-jade/40 animate-ping-soft"
-          style={{ animationDelay: "-1.3s" }}
+        <div className="mt-4 text-center text-[10px] uppercase tracking-[0.32em] text-cn-gold/80">
+          {labelA}
+        </div>
+      </div>
+
+      {/* Orb B — Product universe (blue + jade) */}
+      <div className="absolute right-[6%] top-[52%] -translate-y-1/2">
+        <div className="relative">
+          <span className="absolute -inset-10 rounded-full glow-blue animate-pulse-node" style={{ animationDelay: "-1.2s" }} />
+          <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-[radial-gradient(circle_at_30%_30%,oklch(0.85_0.11_175),oklch(0.55_0.2_258)_55%,oklch(0.2_0.1_258)_100%)] shadow-[0_25px_80px_-10px_var(--color-primary)]">
+            <span className="absolute inset-1 rounded-full border border-primary-foreground/30" />
+            <span className="absolute inset-3 rounded-full border border-dashed border-jade/40 animate-spin-reverse" />
+            <Bot className="relative h-8 w-8 text-primary-foreground" />
+          </div>
+          <span className="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full border border-jade/40 animate-ping-soft" style={{ animationDelay: "-1.3s" }} />
+          {/* Orbiting satellites around B */}
+          <div className="absolute left-1/2 top-1/2 h-0 w-0">
+            {[
+              { Icon: Zap, delay: "-2s" },
+              { Icon: Sparkles, delay: "-10s" },
+              { Icon: Layers, delay: "-18s" },
+            ].map(({ Icon, delay }, i) => (
+              <span
+                key={`b-${i}`}
+                className="absolute -translate-x-1/2 -translate-y-1/2 animate-orbit"
+                style={{ ["--orbit-r" as string]: "82px", animationDelay: delay, animationDuration: "24s" }}
+              >
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-primary/40 bg-background/70 text-primary backdrop-blur-sm">
+                  <Icon className="h-3.5 w-3.5" />
+                </span>
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="mt-4 text-center text-[10px] uppercase tracking-[0.32em] text-primary/80">
+          {labelB}
+        </div>
+      </div>
+
+      {/* Bridge — flowing SVG connecting the two universes */}
+      <svg
+        viewBox="0 0 560 560"
+        className="pointer-events-none absolute inset-0 h-full w-full"
+      >
+        <defs>
+          <linearGradient id="bridge-grad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="oklch(0.63 0.22 27)" />
+            <stop offset="45%" stopColor="oklch(0.82 0.15 85)" />
+            <stop offset="70%" stopColor="oklch(0.72 0.12 175)" />
+            <stop offset="100%" stopColor="oklch(0.62 0.19 258)" />
+          </linearGradient>
+          <linearGradient id="bridge-soft" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="oklch(0.63 0.22 27 / 0.0)" />
+            <stop offset="50%" stopColor="oklch(0.82 0.15 85 / 0.35)" />
+            <stop offset="100%" stopColor="oklch(0.62 0.19 258 / 0.0)" />
+          </linearGradient>
+          <path
+            id="bridge-path"
+            d="M 110 300 C 200 160, 360 440, 450 300"
+          />
+        </defs>
+
+        {/* Soft halo bridge */}
+        <use href="#bridge-path" stroke="url(#bridge-soft)" strokeWidth="18" fill="none" strokeLinecap="round" />
+        {/* Main flowing line */}
+        <use
+          href="#bridge-path"
+          stroke="url(#bridge-grad)"
+          strokeWidth="1.8"
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray="6 10"
+          className="animate-flow-dash"
         />
+        {/* Return line for richness */}
+        <path
+          d="M 110 300 C 210 420, 350 180, 450 300"
+          stroke="url(#bridge-grad)"
+          strokeWidth="1"
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray="2 8"
+          opacity="0.55"
+          className="animate-flow-dash"
+          style={{ animationDuration: "12s", animationDirection: "reverse" }}
+        />
+
+        {/* Data packets travelling along the bridge */}
+        {packets.map((i) => (
+          <circle
+            key={i}
+            r="3.2"
+            fill="oklch(0.92 0.14 85)"
+            style={{
+              offsetPath: "path('M 110 300 C 200 160, 360 440, 450 300')",
+              // @ts-expect-error - offsetPath fallback for older browsers
+              offsetDistance: "0%",
+              animation: `packet 3.6s linear ${i * 0.6}s infinite`,
+              filter: "drop-shadow(0 0 6px oklch(0.82 0.15 85))",
+            } as React.CSSProperties}
+          />
+        ))}
+      </svg>
+
+      {/* Bridge label chip */}
+      <div className="absolute left-1/2 top-[46%] -translate-x-1/2 -translate-y-1/2">
+        <div className="rounded-full border border-cn-gold/40 bg-background/80 px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-cn-gold shadow-[0_10px_30px_-10px_oklch(0.82_0.15_85/0.5)] backdrop-blur-md">
+          {link}
+        </div>
       </div>
     </div>
   );
