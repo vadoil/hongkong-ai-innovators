@@ -2,9 +2,12 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Reveal } from "@/lib/reveal";
-import { DotPortrait } from "./DotPortrait";
 import { Award, Sparkles, ArrowUpRight, Star } from "lucide-react";
 import { ParticleField } from "./ParticleField";
+import teamChan from "@/assets/team-chan.jpg";
+import teamLin from "@/assets/team-lin.jpg";
+import teamMarco from "@/assets/team-marco.jpg";
+import teamAna from "@/assets/team-ana.jpg";
 
 /* ---------- Clients Marquee ---------- */
 const clientLogos = [
@@ -185,17 +188,7 @@ export function Team() {
   const { t } = useI18n();
   const members = [1, 2, 3, 4] as const;
   const accents = ["from-primary/40 to-jade/40", "from-cn-red/40 to-cn-gold/40", "from-jade/40 to-primary/40", "from-cn-gold/40 to-primary/40"];
-  const dotAccents = ["#3B82F6", "#E11D3F", "#10B981", "#F5B301"];
-  const variants = [
-    // Chan Wai Hong — короткие волосы, очки, узкая челюсть
-    { hair: "short" as const, glasses: true, beard: "none" as const, brow: "flat" as const, lips: "thin" as const, jaw: "narrow" as const, tilt: -0.4 },
-    // Lin Xiao — длинные волосы, полные губы
-    { hair: "long"  as const, glasses: false, beard: "none" as const, brow: "arched" as const, lips: "full" as const, jaw: "narrow" as const, tilt: 0.3 },
-    // Marco Rossi — волнистые волосы, борода
-    { hair: "wavy"  as const, glasses: false, beard: "full" as const, brow: "thick" as const, lips: "thin" as const, jaw: "wide" as const, tilt: 0.0 },
-    // Anastasia K. — пучок, тонкие губы, изогнутые брови
-    { hair: "bun"   as const, glasses: false, beard: "none" as const, brow: "arched" as const, lips: "full" as const, jaw: "narrow" as const, tilt: -0.2 },
-  ];
+  const photos = [teamChan, teamLin, teamMarco, teamAna];
   return (
     <section className="relative border-t border-border bg-surface/30 py-24 md:py-32">
       <div className="pointer-events-none absolute -top-40 right-0 -z-0 h-[520px] w-[520px] glow-jade opacity-30" />
@@ -220,13 +213,14 @@ export function Team() {
                   {/* Soft base wash */}
                   <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_10%,oklch(0.22_0.03_260/.55),oklch(0.11_0.02_260))]" />
                   <div className="absolute inset-0 grid-lines opacity-20" />
-                  {/* Dot portrait */}
-                  <DotPortrait
-                    seed={i * 37 + 11}
-                    color="#E7ECF3"
-                    accent={dotAccents[idx]}
-                    variant={variants[idx]}
-                    className="absolute inset-0 h-full w-full"
+                  {/* Schematic portrait */}
+                  <img
+                    src={photos[idx]}
+                    alt={t(`team.${i}.n`)}
+                    loading="lazy"
+                    width={1024}
+                    height={1024}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                   />
                   {/* Vignette + top gloss */}
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/85 via-background/5 to-transparent" />
