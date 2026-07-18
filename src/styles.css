@@ -232,6 +232,10 @@
   0%   { stroke-dashoffset: 260; }
   70%,100% { stroke-dashoffset: 0; }
 }
+@keyframes codeScroll {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
 @keyframes layerFloat {
   0%,100% { transform: translateX(-50%) translateY(0); }
   50%     { transform: translateX(-50%) translateY(-4px); }
