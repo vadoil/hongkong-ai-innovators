@@ -703,68 +703,170 @@ export function Services() {
 /* ---------- PROCESS ---------- */
 const stepNums = ["01", "02", "03", "04", "05"];
 
+const stageMeta = [
+  { key: "discover", tint: "from-primary/15 to-transparent",  caption: "field · interviews" },
+  { key: "strategy", tint: "from-jade/15 to-transparent",     caption: "roadmap · kanban" },
+  { key: "design",   tint: "from-cn-red/15 to-transparent",   caption: "canvas · figma" },
+  { key: "build",    tint: "from-cn-gold/15 to-transparent",  caption: "terminal · ci/cd" },
+  { key: "launch",   tint: "from-primary/20 to-transparent",  caption: "orbit · telemetry" },
+];
+
+function CursorSVG({ color, label }: { color: string; label: string }) {
+  return (
+    <div className="flex items-start gap-1">
+      <svg width="10" height="12" viewBox="0 0 10 12">
+        <path d="M1 1 L1 10 L4 7 L6 11 L8 10 L6 6 L9 6 Z" fill={color} stroke="oklch(0.15 0.02 260)" strokeWidth="0.5" />
+      </svg>
+      <span className="rounded-sm px-1 font-mono text-[7px] uppercase tracking-[0.14em] text-foreground/90"
+            style={{ background: color, opacity: 0.9 }}>{label}</span>
+    </div>
+  );
+}
+
 function StageScene({ i }: { i: number }) {
   switch (i) {
-    case 0: // Discover — magnifier scanning grid
+    case 0: // Discover — heatmap + magnifier orbit + waveform + transcript
       return (
-        <div className="absolute inset-0">
-          <div className="absolute inset-3 rounded-lg opacity-40"
-               style={{ backgroundImage: "linear-gradient(var(--color-border) 1px,transparent 1px),linear-gradient(90deg,var(--color-border) 1px,transparent 1px)", backgroundSize: "14px 14px" }} />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-               style={{ animation: "cursorMove 4s ease-in-out infinite" }}>
-            <div className="relative h-10 w-10 rounded-full border-2 border-primary/70 shadow-[0_0_24px_-2px_var(--color-primary)]">
-              <div className="absolute -bottom-1 -right-1 h-3 w-[2px] rotate-45 bg-primary/80" />
+        <svg viewBox="0 0 120 80" className="absolute inset-0 h-full w-full">
+          <g>
+            {Array.from({ length: 40 }).map((_, k) => {
+              const x = 14 + (k % 8) * 12;
+              const y = 10 + Math.floor(k / 8) * 11;
+              const heat = (Math.sin(k * 1.3) + 1) / 2;
+              const fill = heat > 0.66 ? "var(--color-cn-red)" : heat > 0.4 ? "var(--color-cn-gold)" : "var(--color-primary)";
+              return (
+                <rect key={k} x={x - 4} y={y - 4} width="8" height="8" rx="1.5" fill={fill} opacity={0.15 + heat * 0.45}>
+                  <animate attributeName="opacity" values={`${0.15 + heat * 0.35};${0.2 + heat * 0.6};${0.15 + heat * 0.35}`} dur={`${2 + (k % 4) * 0.4}s`} repeatCount="indefinite" />
+                </rect>
+              );
+            })}
+          </g>
+          <g style={{ transformOrigin: "60px 40px", animation: "orbitSlow 9s linear infinite" }}>
+            <circle cx="92" cy="40" r="9" fill="none" stroke="var(--color-primary)" strokeWidth="1.4" />
+            <line x1="99" y1="47" x2="106" y2="54" stroke="var(--color-primary)" strokeWidth="1.4" />
+          </g>
+          <g transform="translate(0,68)">
+            {Array.from({ length: 18 }).map((_, k) => (
+              <rect key={k} x={6 + k * 6.2} y={-4} width="2.2" height="8" rx="1" fill="var(--color-jade)" opacity="0.75">
+                <animate attributeName="height" values={`${3 + (k % 5) * 1.2};${9 + (k % 3) * 2};${3 + (k % 5) * 1.2}`} dur={`${1.2 + (k % 4) * 0.2}s`} repeatCount="indefinite" />
+                <animate attributeName="y" values={`${-1.5 - (k % 5) * 0.6};${-4.5 - (k % 3)};${-1.5 - (k % 5) * 0.6}`} dur={`${1.2 + (k % 4) * 0.2}s`} repeatCount="indefinite" />
+              </rect>
+            ))}
+          </g>
+          <g fill="var(--color-muted-foreground)" opacity="0.7">
+            <rect x="6" y="4" width="16" height="1.4" rx="0.7" />
+            <rect x="6" y="8" width="10" height="1.4" rx="0.7" />
+          </g>
+        </svg>
+      );
+    case 1: // Strategy — kanban + timeline
+      return (
+        <svg viewBox="0 0 120 80" className="absolute inset-0 h-full w-full">
+          {[0, 1, 2].map((c) => (
+            <g key={c}>
+              <rect x={6 + c * 38} y="6" width="34" height="52" rx="3" fill="oklch(0.18 0.02 260)" stroke="var(--color-border)" strokeOpacity="0.6" />
+              <rect x={6 + c * 38} y="6" width="34" height="6" rx="3" fill={["var(--color-primary)", "var(--color-jade)", "var(--color-cn-gold)"][c]} opacity="0.55" />
+              <rect x={9 + c * 38} y="8" width={10 + c * 3} height="2" rx="1" fill="var(--color-foreground)" opacity="0.55" />
+            </g>
+          ))}
+          <g>
+            <rect x="10" y="18" width="26" height="10" rx="2" fill="oklch(0.22 0.02 260)" stroke="var(--color-primary)" strokeOpacity="0.6">
+              <animateTransform attributeName="transform" type="translate" values="0,0; 38,0; 76,0; 76,14" keyTimes="0;0.35;0.7;1" dur="8s" repeatCount="indefinite" />
+            </rect>
+            <rect x="10" y="32" width="26" height="10" rx="2" fill="oklch(0.22 0.02 260)" stroke="var(--color-jade)" strokeOpacity="0.7">
+              <animateTransform attributeName="transform" type="translate" values="0,0; 0,0; 38,0; 76,0" keyTimes="0;0.25;0.6;1" dur="8s" begin=".8s" repeatCount="indefinite" />
+            </rect>
+            <rect x="10" y="46" width="26" height="10" rx="2" fill="oklch(0.22 0.02 260)" stroke="var(--color-cn-gold)" strokeOpacity="0.7">
+              <animateTransform attributeName="transform" type="translate" values="0,0; 38,0; 38,0; 38,0" keyTimes="0;0.4;0.7;1" dur="8s" begin="1.4s" repeatCount="indefinite" />
+            </rect>
+          </g>
+          <g transform="translate(0,66)">
+            <rect x="6" y="4" width="108" height="4" rx="2" fill="oklch(0.20 0.02 260)" />
+            <rect x="6" y="4" width="60" height="4" rx="2" fill="var(--color-primary)" opacity="0.85">
+              <animate attributeName="width" values="20;90;60" dur="6s" repeatCount="indefinite" />
+            </rect>
+            {[20, 50, 80, 105].map((x, k) => (<circle key={k} cx={x} cy={6} r="1.4" fill="var(--color-foreground)" opacity="0.6" />))}
+          </g>
+        </svg>
+      );
+    case 2: // Design — artboards + swatches + live cursors
+      return (
+        <div className="absolute inset-2">
+          <div className="absolute left-1 top-1 h-[62%] w-[52%] rounded-md bg-background/80 ring-1 ring-border shadow-[0_10px_30px_-16px_var(--color-primary)]"
+               style={{ animation: "floatY 5s ease-in-out infinite" }}>
+            <div className="flex items-center justify-between px-1.5 py-1">
+              <span className="font-mono text-[7px] uppercase tracking-widest text-muted-foreground/70">home · v1</span>
+              <span className="h-1 w-1 rounded-full bg-jade" />
+            </div>
+            <div className="mx-1.5 h-1 w-2/3 rounded bg-primary/70" />
+            <div className="mx-1.5 mt-1 h-1 w-1/2 rounded bg-primary/40" />
+            <div className="mx-1.5 mt-1.5 grid grid-cols-3 gap-1">
+              <div className="h-3 rounded bg-surface ring-1 ring-border" />
+              <div className="h-3 rounded bg-primary/25 ring-1 ring-primary/40" />
+              <div className="h-3 rounded bg-jade/25 ring-1 ring-jade/40" />
+            </div>
+          </div>
+          <div className="absolute right-1 top-3 h-[54%] w-[46%] rounded-md bg-background/80 ring-1 ring-border"
+               style={{ animation: "floatY 5.6s ease-in-out .4s infinite" }}>
+            <div className="flex items-center justify-between px-1.5 py-1">
+              <span className="font-mono text-[7px] uppercase tracking-widest text-muted-foreground/70">card · v3</span>
+              <span className="h-1 w-1 rounded-full bg-cn-gold" />
+            </div>
+            <div className="mx-1.5 h-6 rounded bg-gradient-to-br from-primary/30 to-jade/30" />
+            <div className="mx-1.5 mt-1 h-1 w-3/4 rounded bg-foreground/50" />
+            <div className="mx-1.5 mt-1 h-1 w-1/2 rounded bg-foreground/30" />
+          </div>
+          <div className="absolute bottom-1 left-1 flex items-center gap-1">
+            {["var(--color-primary)", "var(--color-jade)", "var(--color-cn-gold)", "var(--color-cn-red)", "oklch(0.85 0.02 260)"].map((c, k) => (
+              <span key={k} className="h-2 w-2 rounded-full ring-1 ring-border" style={{ background: c }} />
+            ))}
+            <span className="ml-1 font-mono text-[7px] uppercase tracking-[0.24em] text-muted-foreground/70">palette · cwh</span>
+          </div>
+          <div className="absolute left-[38%] top-[46%]" style={{ animation: "cursorMove 5s ease-in-out infinite" }}>
+            <CursorSVG color="var(--color-primary)" label="Lin" />
+          </div>
+          <div className="absolute right-[8%] top-[24%]" style={{ animation: "cursorMove 6s ease-in-out 1s infinite reverse" }}>
+            <CursorSVG color="var(--color-cn-gold)" label="Marco" />
+          </div>
+        </div>
+      );
+    case 3: // Build — branch graph + terminal
+      return (
+        <div className="absolute inset-2 grid grid-cols-5 gap-1.5">
+          <svg viewBox="0 0 40 80" className="col-span-1 h-full w-full" preserveAspectRatio="none">
+            <path d="M8 4 V 76" stroke="var(--color-primary)" strokeOpacity="0.7" strokeWidth="1.2" />
+            <path d="M8 22 C 8 30, 26 30, 26 40" stroke="var(--color-jade)" strokeOpacity="0.8" strokeWidth="1.2" fill="none" />
+            <path d="M26 40 V 66 C 26 72, 8 72, 8 76" stroke="var(--color-jade)" strokeOpacity="0.8" strokeWidth="1.2" fill="none" strokeDasharray="60"
+                  style={{ animation: "drawLine 3s ease-in-out infinite" }} />
+            {[10, 22, 36, 50, 64, 74].map((y, k) => (
+              <circle key={k} cx={k === 2 || k === 3 || k === 4 ? 26 : 8} cy={y} r="2" fill={k % 2 ? "var(--color-jade)" : "var(--color-primary)"}>
+                <animate attributeName="r" values="1.4;2.4;1.4" dur={`${1.6 + k * 0.15}s`} repeatCount="indefinite" />
+              </circle>
+            ))}
+          </svg>
+          <div className="col-span-4 overflow-hidden rounded-md bg-background/70 ring-1 ring-border/70 font-mono text-[8px] leading-[1.35] text-primary/85">
+            <div className="flex items-center gap-1 border-b border-border/60 px-1.5 py-0.5">
+              <span className="h-1 w-1 rounded-full bg-cn-red/70" />
+              <span className="h-1 w-1 rounded-full bg-cn-gold/70" />
+              <span className="h-1 w-1 rounded-full bg-jade/70" />
+              <span className="ml-1 text-[7px] uppercase tracking-widest text-muted-foreground/70">~ cwh · zsh</span>
+            </div>
+            <div className="p-1.5" style={{ animation: "codeScroll 7s linear infinite" }}>
+              <div><span className="text-muted-foreground">$</span> pnpm build</div>
+              <div className="text-jade">▸ compiled 214 modules · 3.4s</div>
+              <div><span className="text-muted-foreground">$</span> pnpm test</div>
+              <div className="text-jade">✓ 128 tests · 0 failures</div>
+              <div><span className="text-muted-foreground">$</span> pnpm deploy hk-edge</div>
+              <div className="text-cn-gold">↑ pushing to hk-1 · hk-2 · sg-1</div>
+              <div className="text-jade">◉ live · https://cwh.hk</div>
+              <div><span className="text-muted-foreground">$</span> ai.integrate()</div>
+              <div className="text-primary">▸ vector db synced</div>
+              <div className="text-jade">✓ green build · 99.99% uptime</div>
             </div>
           </div>
         </div>
       );
-    case 1: // Strategy — connected nodes
-      return (
-        <svg viewBox="0 0 120 80" className="absolute inset-0 h-full w-full">
-          <g fill="var(--color-primary)">
-            <circle cx="20" cy="20" r="3"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" /></circle>
-            <circle cx="60" cy="14" r="3"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin=".3s" repeatCount="indefinite" /></circle>
-            <circle cx="100" cy="30" r="3"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin=".6s" repeatCount="indefinite" /></circle>
-            <circle cx="34" cy="58" r="3" fill="var(--color-jade)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin=".9s" repeatCount="indefinite" /></circle>
-            <circle cx="82" cy="62" r="3" fill="var(--color-cn-gold)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin="1.2s" repeatCount="indefinite" /></circle>
-          </g>
-          <g stroke="var(--color-primary)" strokeOpacity="0.5" strokeWidth="0.7" fill="none" strokeDasharray="3 3">
-            <line x1="20" y1="20" x2="60" y2="14"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1.4s" repeatCount="indefinite" /></line>
-            <line x1="60" y1="14" x2="100" y2="30"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1.4s" repeatCount="indefinite" /></line>
-            <line x1="20" y1="20" x2="34" y2="58"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1.4s" repeatCount="indefinite" /></line>
-            <line x1="34" y1="58" x2="82" y2="62"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1.4s" repeatCount="indefinite" /></line>
-            <line x1="82" y1="62" x2="100" y2="30"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1.4s" repeatCount="indefinite" /></line>
-          </g>
-        </svg>
-      );
-    case 2: // Design — wireframe blocks
-      return (
-        <div className="absolute inset-3 flex flex-col gap-1.5">
-          <div className="h-2 w-1/3 rounded bg-primary/60" style={{ animation: "typeIn 3s ease-in-out infinite" }} />
-          <div className="grid flex-1 grid-cols-3 gap-1.5">
-            <div className="rounded bg-surface/80 ring-1 ring-border" style={{ animation: "floatY 4s ease-in-out infinite" }} />
-            <div className="col-span-2 rounded bg-surface/80 ring-1 ring-border" style={{ animation: "floatY 4.4s ease-in-out .2s infinite" }} />
-            <div className="col-span-2 rounded bg-primary/15 ring-1 ring-primary/40" style={{ animation: "floatY 4.8s ease-in-out .4s infinite" }} />
-            <div className="rounded bg-jade/15 ring-1 ring-jade/40" style={{ animation: "floatY 5.2s ease-in-out .6s infinite" }} />
-          </div>
-        </div>
-      );
-    case 3: // Build — code stream
-      return (
-        <div className="absolute inset-3 overflow-hidden rounded-md bg-background/60 font-mono text-[9px] leading-[1.35] text-primary/80">
-          <div className="p-2" style={{ animation: "codeScroll 6s linear infinite" }}>
-            <div><span className="text-muted-foreground">const</span> ship = <span className="text-jade">async</span>() {"=>"} {"{"}</div>
-            <div className="pl-3"><span className="text-cn-gold">await</span> build(app);</div>
-            <div className="pl-3">deploy(<span className="text-jade">"hk"</span>);</div>
-            <div className="pl-3"><span className="text-cn-gold">return</span> live;</div>
-            <div>{"}"}</div>
-            <div><span className="text-muted-foreground">// ai.integrate()</span></div>
-            <div>ship();</div>
-            <div className="text-jade">✓ passed 128 tests</div>
-          </div>
-        </div>
-      );
-    default: // Launch — rocket trail
+    default: // Launch — globe + orbit + rocket arc + telemetry
       return (
         <svg viewBox="0 0 120 80" className="absolute inset-0 h-full w-full">
           <defs>
@@ -772,19 +874,51 @@ function StageScene({ i }: { i: number }) {
               <stop offset="0" stopColor="var(--color-primary)" stopOpacity="0" />
               <stop offset="1" stopColor="var(--color-cn-gold)" />
             </linearGradient>
+            <radialGradient id={`globe${i}`} cx="0.35" cy="0.35">
+              <stop offset="0" stopColor="oklch(0.42 0.09 240)" />
+              <stop offset="1" stopColor="oklch(0.16 0.03 260)" />
+            </radialGradient>
           </defs>
-          <path id={`arc${i}`} d="M8,70 Q60,10 112,20" fill="none" stroke={`url(#pl${i})`} strokeWidth="2" strokeDasharray="180" strokeDashoffset="180"
-                style={{ animation: "drawLine 3s ease-out infinite" }} />
+          {Array.from({ length: 22 }).map((_, k) => (
+            <circle key={k} cx={(k * 17) % 120} cy={(k * 11) % 60 + 4} r={0.5 + ((k * 3) % 3) * 0.3} fill="var(--color-foreground)" opacity={0.25 + ((k * 7) % 5) * 0.1}>
+              <animate attributeName="opacity" values="0.15;0.8;0.15" dur={`${2 + (k % 5) * 0.5}s`} begin={`${(k % 4) * 0.3}s`} repeatCount="indefinite" />
+            </circle>
+          ))}
           <g>
-            <circle r="4" fill="var(--color-cn-gold)" style={{ filter: "drop-shadow(0 0 6px var(--color-cn-gold))" }}>
-              <animateMotion dur="3s" repeatCount="indefinite">
+            <circle cx="30" cy="52" r="18" fill={`url(#globe${i})`} stroke="var(--color-primary)" strokeOpacity="0.4" strokeWidth="0.6" />
+            <ellipse cx="30" cy="52" rx="18" ry="6" fill="none" stroke="var(--color-primary)" strokeOpacity="0.35" strokeWidth="0.5" />
+            <ellipse cx="30" cy="52" rx="10" ry="18" fill="none" stroke="var(--color-primary)" strokeOpacity="0.28" strokeWidth="0.5" />
+            <g>
+              <circle cx="38" cy="47" r="1.8" fill="var(--color-cn-gold)">
+                <animate attributeName="r" values="1.4;2.8;1.4" dur="1.8s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="38" cy="47" r="1.8" fill="none" stroke="var(--color-cn-gold)" strokeOpacity="0.7">
+                <animate attributeName="r" values="2;7;2" dur="2s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.7;0;0.7" dur="2s" repeatCount="indefinite" />
+              </circle>
+            </g>
+            <ellipse cx="30" cy="52" rx="26" ry="10" fill="none" stroke="var(--color-jade)" strokeOpacity="0.5" strokeWidth="0.6" strokeDasharray="2 3" />
+          </g>
+          <g style={{ transformOrigin: "30px 52px", animation: "orbitSlow 6s linear infinite" }}>
+            <circle cx="56" cy="52" r="1.6" fill="var(--color-jade)" style={{ filter: "drop-shadow(0 0 4px var(--color-jade))" }} />
+          </g>
+          <path id={`arc${i}`} d="M20,64 Q70,4 114,26" fill="none" stroke={`url(#pl${i})`} strokeWidth="1.6" strokeDasharray="200" strokeDashoffset="200"
+                style={{ animation: "drawLine 3.2s ease-out infinite" }} />
+          <g>
+            <polygon points="-3,-1.6 3,0 -3,1.6" fill="var(--color-cn-gold)" style={{ filter: "drop-shadow(0 0 6px var(--color-cn-gold))" }}>
+              <animateMotion dur="3.2s" rotate="auto" repeatCount="indefinite">
                 <mpath href={`#arc${i}`} />
               </animateMotion>
-            </circle>
+            </polygon>
           </g>
-          {[15, 45, 75, 100].map((cx, k) => (
-            <circle key={k} cx={cx} cy={70 - k * 3} r="0.8" fill="var(--color-muted-foreground)" opacity="0.5" />
-          ))}
+          <g transform="translate(72,10)">
+            <rect x="0" y="0" width="42" height="22" rx="2" fill="oklch(0.14 0.02 260 / .85)" stroke="var(--color-border)" strokeOpacity="0.6" />
+            <polyline fill="none" stroke="var(--color-primary)" strokeWidth="1.2"
+                      points="2,18 8,14 12,15 18,9 24,11 30,5 38,7 40,4" />
+            <polyline fill="none" stroke="var(--color-jade)" strokeWidth="1" opacity="0.7"
+                      points="2,20 10,17 16,18 22,14 28,15 34,12 40,13" />
+            <text x="3" y="6" fill="var(--color-muted-foreground)" fontSize="4" fontFamily="ui-monospace,monospace">rps · p95</text>
+          </g>
         </svg>
       );
   }
@@ -794,7 +928,9 @@ export function Process() {
   const { t } = useI18n();
   return (
     <section id="process" className="relative py-24 md:py-32">
-      <div className="pointer-events-none absolute -top-32 left-1/2 -z-0 h-[420px] w-[900px] -translate-x-1/2 glow-blue opacity-30" />
+      <div className="pointer-events-none absolute inset-0 -z-0 opacity-[0.05]"
+           style={{ backgroundImage: "linear-gradient(var(--color-border) 1px,transparent 1px),linear-gradient(90deg,var(--color-border) 1px,transparent 1px)", backgroundSize: "72px 72px" }} />
+      <div className="pointer-events-none absolute -top-32 left-1/2 -z-0 h-[460px] w-[960px] -translate-x-1/2 glow-blue opacity-30" />
       <div className="mx-auto max-w-7xl px-6">
         <SectionHead eyebrow={t("process.eyebrow")} title={t("process.title")} />
 
@@ -814,26 +950,46 @@ export function Process() {
             <line x1="0" y1="12" x2="1000" y2="12" stroke="var(--color-border)" strokeWidth="1" />
             <line x1="0" y1="12" x2="1000" y2="12" stroke="url(#rail)" strokeWidth="2" strokeDasharray="6 10"
                   style={{ animation: "flow-dash 8s linear infinite" }} />
+            <circle r="4" fill="var(--color-cn-gold)" style={{ filter: "drop-shadow(0 0 8px var(--color-cn-gold))" }}>
+              <animate attributeName="cx" values="0;1000" dur="8s" repeatCount="indefinite" />
+              <animate attributeName="cy" values="12;12" dur="8s" repeatCount="indefinite" />
+            </circle>
           </svg>
 
           <div className="relative grid gap-6 md:grid-cols-5">
             {stepNums.map((n, i) => (
               <Reveal key={n} delay={i * 0.1} className="group relative">
                 <div className="relative overflow-hidden rounded-2xl border border-border bg-background/70 p-4 backdrop-blur-md transition-all duration-500 group-hover:-translate-y-1 group-hover:border-primary/50 group-hover:shadow-[0_25px_60px_-30px_var(--color-primary)]">
-                  {/* screen */}
+                  <div className={`pointer-events-none absolute inset-0 -z-0 bg-gradient-to-b ${stageMeta[i].tint} opacity-90`} />
                   <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-border/70 bg-[radial-gradient(120%_80%_at_20%_0%,oklch(0.28_0.03_260/.6),transparent_60%),oklch(0.13_0.02_260)]">
                     <div className="pointer-events-none absolute inset-0 opacity-[0.07] mix-blend-overlay"
                          style={{ backgroundImage: "repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 1px,transparent 3px)" }} />
                     <StageScene i={i} />
+                    <div className="pointer-events-none absolute left-2 top-2 flex items-center gap-1 rounded-md bg-background/50 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-[0.2em] text-foreground/70 ring-1 ring-border/60 backdrop-blur-md">
+                      <span className="h-1 w-1 rounded-full bg-jade animate-pulse" />
+                      {stageMeta[i].key}
+                    </div>
+                    <div className="pointer-events-none absolute right-2 top-2 rounded-md bg-background/50 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-[0.2em] text-foreground/70 ring-1 ring-border/60 backdrop-blur-md">
+                      {stageMeta[i].caption}
+                    </div>
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.05] via-transparent to-transparent" />
                   </div>
-                  {/* number chip sits on the flow line */}
-                  <div className="relative -mt-6 mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-primary/40 bg-background font-display text-sm text-primary shadow-[0_10px_30px_-10px_var(--color-primary)]">
-                    <span className="absolute inset-0 rounded-full bg-primary/15 blur-md opacity-70" />
-                    <span className="relative">{n}</span>
+                  <div className="relative -mt-6 mx-auto flex h-12 w-12 items-center justify-center">
+                    <span className="absolute inset-0 rounded-full border border-primary/25" />
+                    <span className="absolute -inset-1 rounded-full border border-primary/15" />
+                    <span className="absolute -inset-2 rounded-full border border-primary/10" />
+                    <span className="absolute inset-0 rounded-full bg-primary/20 blur-md opacity-70" />
+                    <span className="relative flex h-11 w-11 items-center justify-center rounded-full border border-primary/50 bg-background font-display text-sm text-primary shadow-[0_10px_30px_-10px_var(--color-primary)]">
+                      {n}
+                    </span>
                   </div>
                   <h3 className="mt-4 text-center font-display text-base font-semibold">{t(`process.${i + 1}.t`)}</h3>
                   <p className="mt-2 text-center text-sm leading-relaxed text-muted-foreground">{t(`process.${i + 1}.d`)}</p>
+                  <div className="mt-4 flex items-center justify-center gap-2 font-mono text-[9px] uppercase tracking-[0.24em] text-muted-foreground/70">
+                    <span className="h-px w-6 bg-border" />
+                    stage · 0{i + 1}
+                    <span className="h-px w-6 bg-border" />
+                  </div>
                 </div>
               </Reveal>
             ))}
@@ -843,7 +999,6 @@ export function Process() {
     </section>
   );
 }
-
 /* ---------- WORK ---------- */
 export function Work() {
   const { t } = useI18n();
