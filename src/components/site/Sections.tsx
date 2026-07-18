@@ -526,13 +526,23 @@ function MonitorScene({ i }: { i: number }) {
 }
 
 function Monitor({ i, Icon, title, desc, learn }: { i: number; Icon: typeof Compass; title: string; desc: string; learn: string }) {
+  const stageKey = ["research", "spec", "design", "build", "launch", "operate"][i];
+  const metrics: Array<{ k: string; v: string }> = [
+    { k: "insights",  v: "24" },
+    { k: "specs",     v: "v2.4" },
+    { k: "frames",    v: "168" },
+    { k: "commits",   v: "1.2k" },
+    { k: "uptime",    v: "99.99%" },
+    { k: "sla",       v: "24/7" },
+  ];
+  const accessory = i % 3; // 0: mug, 1: plant, 2: notebook
   return (
     <Link
       to="/contact"
       className="group relative block"
     >
       {/* Monitor body */}
-      <div className="relative overflow-hidden rounded-[22px] border border-border bg-gradient-to-b from-surface to-background p-3 shadow-[0_30px_60px_-40px_rgba(0,0,0,.8)] transition-all duration-500 group-hover:-translate-y-1 group-hover:border-primary/50 group-hover:shadow-[0_40px_80px_-30px_var(--color-primary)]">
+      <div className="relative rounded-[22px] border border-border bg-gradient-to-b from-surface to-background p-3 shadow-[0_30px_60px_-40px_rgba(0,0,0,.8)] transition-all duration-500 group-hover:-translate-y-1 group-hover:border-primary/50 group-hover:shadow-[0_40px_80px_-30px_var(--color-primary)]">
         {/* Bezel top: camera + LEDs */}
         <div className="flex items-center justify-between px-3 pb-2 pt-1">
           <div className="flex items-center gap-1.5">
@@ -541,7 +551,7 @@ function Monitor({ i, Icon, title, desc, learn }: { i: number; Icon: typeof Comp
             <span className="h-1.5 w-1.5 rounded-full bg-jade/70" />
           </div>
           <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground/70">
-            0{i + 1} · {["research", "spec", "design", "build", "launch", "operate"][i]}
+            0{i + 1} · {stageKey}
           </span>
           <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />
         </div>
@@ -558,9 +568,20 @@ function Monitor({ i, Icon, title, desc, learn }: { i: number; Icon: typeof Comp
                style={{ background: "radial-gradient(closest-side,var(--color-primary),transparent)" }} />
           {/* scene */}
           <MonitorScene i={i} />
+          {/* Top-left HUD tag */}
+          <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-md bg-background/50 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.2em] text-foreground/70 ring-1 ring-border/60 backdrop-blur-md">
+            <span className="h-1.5 w-1.5 rounded-full bg-jade animate-pulse" />
+            live · {stageKey}
+          </div>
           {/* Icon chip */}
           <div className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-background/60 text-primary ring-1 ring-primary/30 backdrop-blur-md transition-transform duration-500 group-hover:scale-110">
             <Icon className="h-4 w-4" />
+          </div>
+          {/* Bottom telemetry strip */}
+          <div className="absolute inset-x-2 bottom-2 flex items-center justify-between gap-2 rounded-md bg-background/45 px-2 py-1 font-mono text-[9px] text-foreground/70 ring-1 ring-border/50 backdrop-blur-md">
+            <span className="uppercase tracking-[0.22em] text-muted-foreground/80">{metrics[i].k}</span>
+            <span className="text-primary">{metrics[i].v}</span>
+            <span className="hidden text-muted-foreground/60 sm:inline">· cwh.hk</span>
           </div>
           {/* screen reflection */}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.06] via-transparent to-transparent" />
@@ -570,8 +591,75 @@ function Monitor({ i, Icon, title, desc, learn }: { i: number; Icon: typeof Comp
         <div className="relative mx-auto mt-3 h-3 w-24 rounded-b-[10px] bg-gradient-to-b from-border to-surface" />
         <div className="mx-auto -mt-px h-1 w-40 rounded-full bg-gradient-to-r from-transparent via-border to-transparent" />
 
+        {/* Desk scene: operator + keyboard + accessory */}
+        <div className="relative mx-auto mt-4 h-16 w-full max-w-[92%]">
+          {/* desk surface */}
+          <div className="absolute inset-x-0 top-8 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+          <div className="absolute inset-x-2 top-8 h-8 rounded-md bg-gradient-to-b from-surface/60 to-transparent" />
+          {/* keyboard */}
+          <div className="absolute left-1/2 top-3 h-3 w-32 -translate-x-1/2 rounded-[3px] bg-gradient-to-b from-border/80 to-surface ring-1 ring-border/70"
+               style={{ backgroundImage: "repeating-linear-gradient(90deg,transparent 0,transparent 4px,oklch(0.20_0.02_260) 4px,oklch(0.20_0.02_260) 5px)" }} />
+          {/* trackpad */}
+          <div className="absolute left-[calc(50%+80px)] top-4 h-2.5 w-8 rounded-[3px] bg-surface ring-1 ring-border/70" />
+          {/* operator silhouette (behind keyboard) */}
+          <svg className="absolute left-1/2 top-0 h-8 w-16 -translate-x-1/2" viewBox="0 0 64 32" aria-hidden>
+            <defs>
+              <linearGradient id={`op${i}`} x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stopColor="var(--color-primary)" stopOpacity="0.35" />
+                <stop offset="1" stopColor="var(--color-primary)" stopOpacity="0.05" />
+              </linearGradient>
+            </defs>
+            <path d="M32 4 c-4.2 0 -7 3 -7 6.8 c0 3.2 2 5.4 4.5 6.2 C24 18 20 22 20 30 h24 c0 -8 -4 -12 -9.5 -13 c2.5 -0.8 4.5 -3 4.5 -6.2 C39 7 36.2 4 32 4z"
+                  fill={`url(#op${i})`} stroke="var(--color-border)" strokeWidth="0.6" />
+          </svg>
+          {/* accessory */}
+          {accessory === 0 && (
+            /* mug with steam */
+            <div className="absolute left-3 top-2">
+              <div className="relative h-5 w-4 rounded-b-[3px] bg-gradient-to-b from-cn-red/70 to-cn-red/40 ring-1 ring-border/70">
+                <span className="absolute -right-1 top-1 h-2 w-1.5 rounded-r-full border border-border/70" />
+              </div>
+              <svg className="absolute -top-3 left-0 h-4 w-4 opacity-70" viewBox="0 0 16 16">
+                <path d="M4 14 Q6 10 4 6 Q2 3 6 1" fill="none" stroke="var(--color-muted-foreground)" strokeWidth="0.7" strokeLinecap="round">
+                  <animate attributeName="opacity" values="0.2;0.8;0.2" dur="3s" repeatCount="indefinite" />
+                </path>
+                <path d="M9 14 Q11 10 9 6 Q7 3 11 1" fill="none" stroke="var(--color-muted-foreground)" strokeWidth="0.7" strokeLinecap="round">
+                  <animate attributeName="opacity" values="0.6;0.15;0.6" dur="3s" repeatCount="indefinite" />
+                </path>
+              </svg>
+            </div>
+          )}
+          {accessory === 1 && (
+            /* plant */
+            <div className="absolute right-3 top-1 flex flex-col items-center">
+              <svg className="h-5 w-6" viewBox="0 0 24 24">
+                <path d="M12 20 C6 14 4 8 8 4 C10 8 12 12 12 20 Z" fill="var(--color-jade)" opacity="0.75">
+                  <animateTransform attributeName="transform" type="rotate" values="-2 12 20;2 12 20;-2 12 20" dur="4s" repeatCount="indefinite" />
+                </path>
+                <path d="M12 20 C18 14 20 8 16 4 C14 8 12 12 12 20 Z" fill="var(--color-jade)" opacity="0.55">
+                  <animateTransform attributeName="transform" type="rotate" values="2 12 20;-2 12 20;2 12 20" dur="4.4s" repeatCount="indefinite" />
+                </path>
+              </svg>
+              <div className="-mt-0.5 h-2 w-4 rounded-b-[2px] bg-cn-gold/70 ring-1 ring-border/70" />
+            </div>
+          )}
+          {accessory === 2 && (
+            /* notebook + pen */
+            <div className="absolute right-3 top-4">
+              <div className="h-3 w-6 rotate-[-6deg] rounded-[2px] bg-surface ring-1 ring-border/70">
+                <div className="mt-[3px] ml-1 h-[1px] w-4 bg-border" />
+                <div className="mt-[2px] ml-1 h-[1px] w-3 bg-border" />
+              </div>
+              <div className="mt-[-4px] ml-2 h-[1px] w-5 rotate-[15deg] bg-cn-red/80" />
+            </div>
+          )}
+          {/* floor glow under monitor */}
+          <div className="pointer-events-none absolute inset-x-8 top-9 h-6 rounded-full opacity-0 blur-2xl transition-opacity duration-700 group-hover:opacity-60"
+               style={{ background: "radial-gradient(closest-side,var(--color-primary),transparent 70%)" }} />
+        </div>
+
         {/* Copy */}
-        <div className="px-3 pb-1 pt-5">
+        <div className="px-3 pb-1 pt-4">
           <h3 className="font-display text-lg font-semibold tracking-tight">{title}</h3>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
           <div className="mt-4 inline-flex items-center gap-1 text-sm text-primary opacity-0 -translate-x-2 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100">
@@ -587,8 +675,11 @@ export function Services() {
   const { t } = useI18n();
   return (
     <section className="relative border-t border-border bg-surface/40 py-24 md:py-32">
-      {/* desk-line */}
+      {/* wall grid + desk-line */}
+      <div className="pointer-events-none absolute inset-0 -z-0 opacity-[0.05]"
+           style={{ backgroundImage: "linear-gradient(var(--color-border) 1px,transparent 1px),linear-gradient(90deg,var(--color-border) 1px,transparent 1px)", backgroundSize: "56px 56px" }} />
       <div className="pointer-events-none absolute inset-x-0 top-1/2 -z-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+      <div className="pointer-events-none absolute left-1/2 top-24 -z-0 h-[420px] w-[860px] -translate-x-1/2 glow-blue opacity-25" />
       <div className="mx-auto max-w-7xl px-6">
         <SectionHead eyebrow={t("services.eyebrow")} title={t("services.title")} />
         <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
