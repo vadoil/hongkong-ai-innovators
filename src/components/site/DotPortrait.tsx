@@ -468,9 +468,13 @@ export function DotPortrait({
         const a = img[i + 3] / 255;
         if (a < 0.02) { m[j] = 0; continue; }
         const lum = (0.2126 * img[i] + 0.7152 * img[i + 1] + 0.0722 * img[i + 2]) / 255;
-        // Emphasize dark areas: raise darkness to slight power
-        const dk = 1 - lum;
-        m[j] = a * Math.pow(dk, 0.9);
+        // We render on a DARK card, so invert stipple: densest dots go into
+        // the LIT areas (highlights on the face), sparser dots trail off into
+        // shadow. This lets faces read as a bright "phosphor" portrait rather
+        // than getting swallowed by the dark background.
+        // Give shadows a minimum floor so the silhouette stays perceptible.
+        const brightness = Math.pow(lum, 0.85);
+        m[j] = a * Math.max(0.08, brightness);
       }
       mask = m;
     }
@@ -524,13 +528,14 @@ export function DotPortrait({
       const mx = mouse.current.x, my = mouse.current.y, active = mouse.current.active;
 
       // Bucket points by fill for path batching
-      // 5 buckets: nearBlack, dark, mid, light, accent
+      // 5 buckets — all LIGHT tones, differing only by brightness/opacity so
+      // the stippling reads on a dark card. Density drives shading.
       const paths = [
-        { fill: "#03040A", alpha: 0.95, path: new Path2D() },
-        { fill: "#141922", alpha: 0.92, path: new Path2D() },
-        { fill: "#3E4756", alpha: 0.85, path: new Path2D() },
-        { fill: color,     alpha: 0.78, path: new Path2D() },
-        { fill: accent,    alpha: 0.95, path: new Path2D() },
+        { fill: "#FFFFFF", alpha: 0.98, path: new Path2D() }, // hottest highlights
+        { fill: color,     alpha: 0.9,  path: new Path2D() }, // main skin tone
+        { fill: "#C7CED9", alpha: 0.78, path: new Path2D() }, // mid
+        { fill: "#7C8494", alpha: 0.55, path: new Path2D() }, // shadow (subtle)
+        { fill: accent,    alpha: 0.95, path: new Path2D() }, // color sparkle
       ];
 
       for (let i = 0; i < pts.length; i++) {
@@ -554,13 +559,13 @@ export function DotPortrait({
           }
         }
 
-        // Bucket selection
+        // Bucket selection: brighter mask value → brighter/denser bucket
         let b: number;
-        if (p.hue > 0.985) b = 4;
-        else if (p.w > 0.7) b = 0;
-        else if (p.w > 0.45) b = 1;
-        else if (p.w > 0.22) b = 2;
-        else b = 3;
+        if (p.hue > 0.985) b = 4;              // rare accent sparkle
+        else if (p.w > 0.75) b = 0;            // brightest — eye whites, cheek highlight
+        else if (p.w > 0.5)  b = 1;            // main skin tone
+        else if (p.w > 0.28) b = 2;            // mid tone
+        else                 b = 3;            // shadow/hair fringe
 
         const pth = paths[b].path;
         pth.moveTo(x + p.r, y);
