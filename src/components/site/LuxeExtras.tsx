@@ -186,6 +186,12 @@ export function Team() {
   const members = [1, 2, 3, 4] as const;
   const accents = ["from-primary/40 to-jade/40", "from-cn-red/40 to-cn-gold/40", "from-jade/40 to-primary/40", "from-cn-gold/40 to-primary/40"];
   const dotAccents = ["#3B82F6", "#E11D3F", "#10B981", "#F5B301"];
+  const variants = [
+    { hair: "short" as const, glasses: true, beard: false, tilt: -0.4 },   // Chan Wai Hong
+    { hair: "long" as const,  glasses: false, beard: false, tilt: 0.3 },   // Lin Xiao
+    { hair: "short" as const, glasses: false, beard: true,  tilt: 0.0 },   // Marco Rossi
+    { hair: "bun" as const,   glasses: false, beard: false, tilt: -0.2 },  // Anastasia K.
+  ];
   return (
     <section className="relative border-t border-border bg-surface/30 py-24 md:py-32">
       <div className="pointer-events-none absolute -top-40 right-0 -z-0 h-[520px] w-[520px] glow-jade opacity-30" />
@@ -215,6 +221,7 @@ export function Team() {
                     seed={i * 37 + 11}
                     color="#E7ECF3"
                     accent={dotAccents[idx]}
+                    variant={variants[idx]}
                     className="absolute inset-0 h-full w-full"
                   />
                   {/* Vignette + top gloss */}
