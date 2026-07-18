@@ -369,6 +369,11 @@ function UniverseCore({ labelA, labelB, link }: { labelA: string; labelB: string
 
 /* ---------- PILLARS ---------- */
 const pillarIcons = [Search, FileText, Layers, TrendingUp];
+import pillar1 from "@/assets/pillar-1.jpg";
+import pillar2 from "@/assets/pillar-2.jpg";
+import pillar3 from "@/assets/pillar-3.jpg";
+import pillar4 from "@/assets/pillar-4.jpg";
+const pillarImages = [pillar1, pillar2, pillar3, pillar4];
 
 export function Pillars() {
   const { t } = useI18n();
@@ -382,12 +387,25 @@ export function Pillars() {
         />
         <div className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2 lg:grid-cols-4">
           {pillarIcons.map((Icon, i) => (
-            <Reveal key={i} delay={i * 0.08} className="group relative bg-background p-8 transition-colors hover:bg-surface">
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:scale-110">
-                <Icon className="h-5 w-5 transition-transform duration-500 group-hover:rotate-6 group-hover:animate-icon-bob" />
+            <Reveal key={i} delay={i * 0.08} className="group relative overflow-hidden bg-background transition-colors hover:bg-surface">
+              <div className="relative aspect-[16/10] overflow-hidden">
+                <img
+                  src={pillarImages[i]}
+                  alt={t(`pillars.${i + 1}.t`)}
+                  loading="lazy"
+                  width={1280}
+                  height={960}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                <div className="absolute left-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-background/70 text-primary backdrop-blur-md ring-1 ring-primary/30 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:scale-110">
+                  <Icon className="h-5 w-5 transition-transform duration-500 group-hover:rotate-6 group-hover:animate-icon-bob" />
+                </div>
               </div>
-              <h3 className="mt-6 font-display text-lg font-semibold">{t(`pillars.${i + 1}.t`)}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t(`pillars.${i + 1}.d`)}</p>
+              <div className="p-8 pt-6">
+                <h3 className="font-display text-lg font-semibold">{t(`pillars.${i + 1}.t`)}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t(`pillars.${i + 1}.d`)}</p>
+              </div>
             </Reveal>
           ))}
         </div>
