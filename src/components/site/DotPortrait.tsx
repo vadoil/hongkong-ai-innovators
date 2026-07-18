@@ -1,15 +1,30 @@
 import { useEffect, useRef } from "react";
 
-type Props = {
-  seed?: number;
-  color?: string;      // dot color (css)
-  accent?: string;     // accent color for highlights
-  className?: string;
-  density?: number;    // 0..1
+type Variant = {
+  hair: "short" | "long" | "buzz" | "bun";
+  glasses?: boolean;
+  beard?: boolean;
+  tilt?: number;
 };
 
-/** Animated portrait made of drifting dots that settle into a stylised bust silhouette. */
-export function DotPortrait({ seed = 1, color = "#E7ECF3", accent = "#3B82F6", className, density = 1 }: Props) {
+type Props = {
+  seed?: number;
+  color?: string;
+  accent?: string;
+  className?: string;
+  density?: number;
+  variant?: Variant;
+};
+
+/** Animated dot portrait with recognisable facial features and per-person variants. */
+export function DotPortrait({
+  seed = 1,
+  color = "#E7ECF3",
+  accent = "#3B82F6",
+  className,
+  density = 1,
+  variant = { hair: "short" },
+}: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
   const mouse = useRef<{ x: number; y: number; active: boolean }>({ x: 0, y: 0, active: false });
 
@@ -19,9 +34,9 @@ export function DotPortrait({ seed = 1, color = "#E7ECF3", accent = "#3B82F6", c
     const parent = canvas.parentElement!;
     const ctx = canvas.getContext("2d")!;
     let raf = 0;
-    let W = 0, H = 0, DPR = Math.min(2, window.devicePixelRatio || 1);
+    let W = 0, H = 0;
+    const DPR = Math.min(2, window.devicePixelRatio || 1);
 
-    // Deterministic PRNG
     const rand = (() => {
       let s = seed * 9301 + 49297;
       return () => {
@@ -30,26 +45,98 @@ export function DotPortrait({ seed = 1, color = "#E7ECF3", accent = "#3B82F6", c
       };
     })();
 
-    type P = { x: number; y: number; tx: number; ty: number; vx: number; vy: number; r: number; hue: number };
+    type P = {
+      x: number; y: number; tx: number; ty: number;
+      vx: number; vy: number; r: number; hue: number; dark?: boolean;
+    };
     let pts: P[] = [];
 
-    // Build a target silhouette (head + neck + shoulders) in normalized 0..1 coords.
-    function insideSilhouette(nx: number, ny: number) {
-      // head: ellipse
-      const hx = 0.5, hy = 0.36, hrx = 0.19, hry = 0.23;
-      const dh = ((nx - hx) / hrx) ** 2 + ((ny - hy) / hry) ** 2;
-      if (dh <= 1) return true;
-      // neck
-      if (nx > 0.44 && nx < 0.56 && ny > 0.55 && ny < 0.66) return true;
-      // shoulders: rounded trapezoid
-      if (ny >= 0.64 && ny <= 1.02) {
-        const spread = 0.22 + (ny - 0.64) * 1.4;
-        const cx = 0.5;
-        // top curve of shoulders
-        const topEdge = 0.66 - 0.06 * (1 - Math.abs((nx - cx) / spread));
-        if (Math.abs(nx - cx) < spread && ny > topEdge) return true;
+    const tilt = variant.tilt ?? 0;
+    const cx = 0.5 + tilt * 0.02;
+    const face = { cx, cy: 0.42, rx: 0.17, ry: 0.21 };
+
+    const inEllipse = (nx: number, ny: number, ex: number, ey: number, rx: number, ry: number) =>
+      ((nx - ex) / rx) ** 2 + ((ny - ey) / ry) ** 2 <= 1;
+
+    function inHair(nx: number, ny: number) {
+      const dx = nx - face.cx;
+      switch (variant.hair) {
+        case "buzz":
+          return inEllipse(nx, ny, face.cx, face.cy - 0.06, face.rx * 1.02, face.ry * 0.55)
+            && ny < face.cy - 0.02;
+        case "long":
+          if (inEllipse(nx, ny, face.cx, face.cy - 0.05, face.rx * 1.15, face.ry * 0.7)
+              && ny < face.cy - 0.02) return true;
+          if (Math.abs(dx) > face.rx * 0.75 && Math.abs(dx) < face.rx * 1.25
+              && ny > face.cy - 0.15 && ny < face.cy + face.ry * 1.05) return true;
+          return false;
+        case "bun":
+          if (inEllipse(nx, ny, face.cx, face.cy - 0.05, face.rx * 1.08, face.ry * 0.6)
+              && ny < face.cy - 0.02) return true;
+          if (inEllipse(nx, ny, face.cx + 0.05, face.cy - 0.22, 0.07, 0.07)) return true;
+          return false;
+        case "short":
+        default:
+          return inEllipse(nx, ny, face.cx, face.cy - 0.05, face.rx * 1.08, face.ry * 0.65)
+            && ny < face.cy - 0.015;
       }
+    }
+
+    function inBeard(nx: number, ny: number) {
+      if (!variant.beard) return false;
+      const dx = nx - face.cx;
+      return ny > face.cy + 0.04 && ny < face.cy + face.ry * 0.95
+        && Math.abs(dx) < face.rx * 0.85
+        && inEllipse(nx, ny, face.cx, face.cy + 0.08, face.rx * 0.9, face.ry * 0.85);
+    }
+
+    function inNeck(nx: number, ny: number) {
+      return Math.abs(nx - face.cx) < 0.06 && ny > face.cy + face.ry - 0.01 && ny < 0.7;
+    }
+
+    function inShoulders(nx: number, ny: number) {
+      if (ny < 0.68 || ny > 1.02) return false;
+      const spread = 0.22 + (ny - 0.68) * 1.3;
+      const topEdge = 0.7 - 0.05 * (1 - Math.abs((nx - 0.5) / spread));
+      return Math.abs(nx - 0.5) < spread && ny > topEdge;
+    }
+
+    function insideSilhouette(nx: number, ny: number) {
+      if (inEllipse(nx, ny, face.cx, face.cy, face.rx, face.ry)) return true;
+      if (inHair(nx, ny)) return true;
+      if (inNeck(nx, ny)) return true;
+      if (inShoulders(nx, ny)) return true;
       return false;
+    }
+
+    type Cluster = { cx: number; cy: number; rx: number; ry: number; count: number; dark: boolean };
+    function buildClusters(scale = 1): Cluster[] {
+      const eyeY = face.cy - 0.02;
+      const eyeDX = face.rx * 0.42;
+      const cs: Cluster[] = [];
+      cs.push({ cx: face.cx - eyeDX, cy: eyeY - 0.05, rx: 0.045, ry: 0.012, count: Math.round(22 * scale), dark: true });
+      cs.push({ cx: face.cx + eyeDX, cy: eyeY - 0.05, rx: 0.045, ry: 0.012, count: Math.round(22 * scale), dark: true });
+      cs.push({ cx: face.cx - eyeDX, cy: eyeY, rx: 0.032, ry: 0.018, count: Math.round(26 * scale), dark: true });
+      cs.push({ cx: face.cx + eyeDX, cy: eyeY, rx: 0.032, ry: 0.018, count: Math.round(26 * scale), dark: true });
+      cs.push({ cx: face.cx, cy: eyeY + 0.06, rx: 0.012, ry: 0.05, count: Math.round(16 * scale), dark: false });
+      cs.push({ cx: face.cx, cy: eyeY + 0.11, rx: 0.028, ry: 0.012, count: Math.round(14 * scale), dark: false });
+      cs.push({ cx: face.cx, cy: eyeY + 0.18, rx: 0.06, ry: 0.012, count: Math.round(28 * scale), dark: true });
+      if (variant.glasses) {
+        for (let a = 0; a < Math.PI * 2; a += Math.PI / 12) {
+          cs.push({
+            cx: face.cx - eyeDX + Math.cos(a) * 0.05,
+            cy: eyeY + Math.sin(a) * 0.028,
+            rx: 0.006, ry: 0.006, count: Math.round(3 * scale), dark: true,
+          });
+          cs.push({
+            cx: face.cx + eyeDX + Math.cos(a) * 0.05,
+            cy: eyeY + Math.sin(a) * 0.028,
+            rx: 0.006, ry: 0.006, count: Math.round(3 * scale), dark: true,
+          });
+        }
+        cs.push({ cx: face.cx, cy: eyeY, rx: 0.02, ry: 0.004, count: Math.round(8 * scale), dark: true });
+      }
+      return cs;
     }
 
     function resize() {
@@ -61,27 +148,43 @@ export function DotPortrait({ seed = 1, color = "#E7ECF3", accent = "#3B82F6", c
       seedPoints();
     }
 
+    function pushPoint(nx: number, ny: number, opts: { dark?: boolean; jitter?: number } = {}) {
+      const x = nx * W, y = ny * H;
+      const jitter = opts.jitter ?? 40;
+      pts.push({
+        x: x + (rand() - 0.5) * jitter,
+        y: y + (rand() - 0.5) * jitter,
+        tx: x, ty: y,
+        vx: 0, vy: 0,
+        r: opts.dark ? 0.7 + rand() * 1.0 : 0.6 + rand() * 1.4,
+        hue: rand(),
+        dark: opts.dark,
+      });
+    }
+
     function seedPoints() {
-      const target = Math.floor((W * H) / 260 * density);
       pts = [];
+      const baseTarget = Math.floor((W * H) / 300 * density);
       let tries = 0;
-      while (pts.length < target && tries < target * 40) {
+      while (pts.length < baseTarget && tries < baseTarget * 40) {
         tries++;
-        const nx = rand();
-        const ny = rand();
+        const nx = rand(), ny = rand();
         if (!insideSilhouette(nx, ny)) continue;
-        // slight bias toward face area (denser dots on head)
-        if (ny < 0.6 && rand() < 0.15) continue;
-        const x = nx * W;
-        const y = ny * H;
-        pts.push({
-          x: x + (rand() - 0.5) * 40,
-          y: y + (rand() - 0.5) * 40,
-          tx: x, ty: y,
-          vx: 0, vy: 0,
-          r: 0.6 + rand() * 1.4,
-          hue: rand(),
-        });
+        const inH = inHair(nx, ny);
+        const inB = inBeard(nx, ny);
+        pushPoint(nx, ny, { dark: inH || inB });
+      }
+      const scale = Math.max(0.6, Math.min(1.6, (W * H) / (220 * 275))) * density;
+      const clusters = buildClusters(scale);
+      for (const c of clusters) {
+        for (let i = 0; i < c.count; i++) {
+          let nx = c.cx, ny = c.cy;
+          for (let k = 0; k < 8; k++) {
+            const u = rand() * 2 - 1, v = rand() * 2 - 1;
+            if (u * u + v * v <= 1) { nx = c.cx + u * c.rx; ny = c.cy + v * c.ry; break; }
+          }
+          pushPoint(nx, ny, { dark: c.dark, jitter: 18 });
+        }
       }
     }
 
@@ -94,18 +197,15 @@ export function DotPortrait({ seed = 1, color = "#E7ECF3", accent = "#3B82F6", c
 
       for (let i = 0; i < pts.length; i++) {
         const p = pts[i];
-        // Pull toward target
         const dx = p.tx - p.x;
         const dy = p.ty - p.y;
-        p.vx += dx * 0.006;
-        p.vy += dy * 0.006;
+        p.vx += dx * 0.008;
+        p.vy += dy * 0.008;
 
-        // Ambient breath drift
-        const wob = Math.sin(now * 0.0008 + p.hue * 6.28) * 0.06;
+        const wob = Math.sin(now * 0.0008 + p.hue * 6.28) * 0.05;
         p.vx += wob;
-        p.vy += Math.cos(now * 0.0009 + p.hue * 6.28) * 0.05;
+        p.vy += Math.cos(now * 0.0009 + p.hue * 6.28) * 0.04;
 
-        // Cursor scatter
         if (active) {
           const rx = p.x - mx;
           const ry = p.y - my;
@@ -121,9 +221,14 @@ export function DotPortrait({ seed = 1, color = "#E7ECF3", accent = "#3B82F6", c
         p.x += p.vx * (dt / 16);
         p.y += p.vy * (dt / 16);
 
-        const useAccent = p.hue > 0.86;
-        ctx.fillStyle = useAccent ? accent : color;
-        ctx.globalAlpha = useAccent ? 0.95 : 0.75;
+        const useAccent = !p.dark && p.hue > 0.9;
+        if (p.dark) {
+          ctx.fillStyle = "#05070C";
+          ctx.globalAlpha = 0.95;
+        } else {
+          ctx.fillStyle = useAccent ? accent : color;
+          ctx.globalAlpha = useAccent ? 0.95 : 0.72;
+        }
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
@@ -152,7 +257,7 @@ export function DotPortrait({ seed = 1, color = "#E7ECF3", accent = "#3B82F6", c
       parent.removeEventListener("mousemove", onMove);
       parent.removeEventListener("mouseleave", onLeave);
     };
-  }, [seed, color, accent, density]);
+  }, [seed, color, accent, density, variant.hair, variant.glasses, variant.beard, variant.tilt]);
 
   return <canvas ref={ref} className={className} />;
 }
