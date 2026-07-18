@@ -168,6 +168,11 @@ function RootShell({ children }: { children: ReactNode }) {
       <body>
         {children}
         <Scripts />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var h=location.hostname;if(h.endsWith('lovable.app')||h.endsWith('lovableproject.com')){location.replace('https://cwh.hk'+location.pathname+location.search+location.hash);}}catch(e){}})();`,
+          }}
+        />
       </body>
     </html>
   );
