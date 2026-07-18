@@ -460,12 +460,13 @@ export function Process() {
 /* ---------- WORK ---------- */
 export function Work() {
   const { t } = useI18n();
-  const items = [1, 2, 3, 4] as const;
+  // Показываем 9 кейсов (3x3), выделяя 4 новых: crypto1(7), crypto2(8), finMonitor(9), construction(10)
+  const items = [7, 8, 9, 10, 1, 2, 3, 4, 5] as const;
   return (
     <section id="work" className="relative border-t border-border bg-surface/40 py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHead eyebrow={t("work.eyebrow")} title={t("work.title")} />
-        <div className="mt-14 grid gap-6 md:grid-cols-2">
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((i) => (
             <Link
               key={i}
