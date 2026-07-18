@@ -55,8 +55,8 @@ export function DotPortrait({ seed = 1, color = "#E7ECF3", accent = "#3B82F6", c
     function resize() {
       const rect = parent.getBoundingClientRect();
       W = rect.width; H = rect.height;
-      canvas.width = W * DPR; canvas.height = H * DPR;
-      canvas.style.width = W + "px"; canvas.style.height = H + "px";
+      canvas!.width = W * DPR; canvas!.height = H * DPR;
+      canvas!.style.width = W + "px"; canvas!.style.height = H + "px";
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
       seedPoints();
     }
