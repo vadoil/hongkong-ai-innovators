@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Reveal } from "@/lib/reveal";
+import { DotPortrait } from "./DotPortrait";
 import { Award, Sparkles, ArrowUpRight, Star } from "lucide-react";
 import { ParticleField } from "./ParticleField";
 
