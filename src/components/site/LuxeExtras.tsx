@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Reveal } from "@/lib/reveal";
 import { Award, Sparkles, ArrowUpRight, Star } from "lucide-react";
+import { ParticleField } from "./ParticleField";
 
 /* ---------- Clients Marquee ---------- */
 const clientLogos = [
@@ -142,8 +143,11 @@ export function BigStats() {
   ];
   return (
     <section className="relative border-t border-border bg-background py-24 md:py-32">
-      <div className="pointer-events-none absolute inset-0 -z-0 opacity-40 grid-lines" />
-      <div className="pointer-events-none absolute -top-32 left-1/2 -z-0 h-[520px] w-[900px] -translate-x-1/2 glow-blue opacity-40" />
+      <div className="pointer-events-none absolute inset-0 -z-0 opacity-20 grid-lines" />
+      <ParticleField className="-z-0 opacity-80" density={110} linkDistance={140} />
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-0 h-40 bg-gradient-to-b from-background to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-0 h-40 bg-gradient-to-t from-background to-transparent" />
+      <div className="pointer-events-none absolute -top-32 left-1/2 -z-0 h-[520px] w-[900px] -translate-x-1/2 glow-blue opacity-30" />
       <div className="relative mx-auto max-w-7xl px-6">
         <Reveal>
           <div className="flex flex-col items-center text-center">
