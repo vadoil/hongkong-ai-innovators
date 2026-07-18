@@ -187,10 +187,14 @@ export function Team() {
   const accents = ["from-primary/40 to-jade/40", "from-cn-red/40 to-cn-gold/40", "from-jade/40 to-primary/40", "from-cn-gold/40 to-primary/40"];
   const dotAccents = ["#3B82F6", "#E11D3F", "#10B981", "#F5B301"];
   const variants = [
-    { hair: "short" as const, glasses: true, beard: false, tilt: -0.4 },   // Chan Wai Hong
-    { hair: "long" as const,  glasses: false, beard: false, tilt: 0.3 },   // Lin Xiao
-    { hair: "short" as const, glasses: false, beard: true,  tilt: 0.0 },   // Marco Rossi
-    { hair: "bun" as const,   glasses: false, beard: false, tilt: -0.2 },  // Anastasia K.
+    // Chan Wai Hong — короткие волосы, очки, узкая челюсть
+    { hair: "short" as const, glasses: true, beard: "none" as const, brow: "flat" as const, lips: "thin" as const, jaw: "narrow" as const, tilt: -0.4 },
+    // Lin Xiao — длинные волосы, полные губы
+    { hair: "long"  as const, glasses: false, beard: "none" as const, brow: "arched" as const, lips: "full" as const, jaw: "narrow" as const, tilt: 0.3 },
+    // Marco Rossi — волнистые волосы, борода
+    { hair: "wavy"  as const, glasses: false, beard: "full" as const, brow: "thick" as const, lips: "thin" as const, jaw: "wide" as const, tilt: 0.0 },
+    // Anastasia K. — пучок, тонкие губы, изогнутые брови
+    { hair: "bun"   as const, glasses: false, beard: "none" as const, brow: "arched" as const, lips: "full" as const, jaw: "narrow" as const, tilt: -0.2 },
   ];
   return (
     <section className="relative border-t border-border bg-surface/30 py-24 md:py-32">
