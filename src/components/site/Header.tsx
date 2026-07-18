@@ -58,12 +58,12 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <div className="hidden items-center gap-0.5 rounded-full border border-border px-1 py-1 text-xs sm:flex">
+          <div className="flex items-center gap-0.5 rounded-full border border-border px-1 py-1 text-xs">
             {(["zh", "en", "ru"] as Lang[]).map((l) => (
               <button
                 key={l}
                 onClick={() => setLang(l)}
-                className={`rounded-full px-2.5 py-1 transition-colors ${
+                className={`rounded-full px-2 py-1 transition-colors sm:px-2.5 ${
                   lang === l
                     ? "bg-foreground/10 text-foreground"
                     : "text-muted-foreground hover:text-foreground"
@@ -83,7 +83,7 @@ export function Header() {
           </button>
           <Link
             to="/contact"
-            className="inline-flex items-center rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-[0_0_0_1px_oklch(1_0_0_/_0.08),0_10px_30px_-10px_var(--color-primary)] transition-transform hover:-translate-y-0.5"
+            className="hidden items-center rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-[0_0_0_1px_oklch(1_0_0_/_0.08),0_10px_30px_-10px_var(--color-primary)] transition-transform hover:-translate-y-0.5 sm:inline-flex"
           >
             {t("cta.start")}
           </Link>
