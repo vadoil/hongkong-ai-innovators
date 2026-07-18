@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { Reveal } from "@/lib/reveal";
+import { DotPortrait } from "./DotPortrait";
 import { Award, Sparkles, ArrowUpRight, Star } from "lucide-react";
 import { ParticleField } from "./ParticleField";
 
@@ -184,6 +185,7 @@ export function Team() {
   const { t } = useI18n();
   const members = [1, 2, 3, 4] as const;
   const accents = ["from-primary/40 to-jade/40", "from-cn-red/40 to-cn-gold/40", "from-jade/40 to-primary/40", "from-cn-gold/40 to-primary/40"];
+  const dotAccents = ["#3B82F6", "#E11D3F", "#10B981", "#F5B301"];
   return (
     <section className="relative border-t border-border bg-surface/30 py-24 md:py-32">
       <div className="pointer-events-none absolute -top-40 right-0 -z-0 h-[520px] w-[520px] glow-jade opacity-30" />
@@ -204,16 +206,29 @@ export function Team() {
           {members.map((i, idx) => (
             <Reveal key={i} delay={idx * 0.08}>
               <div className="group relative overflow-hidden rounded-3xl border border-border bg-background/60 p-6 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-primary/60">
-                <div className={`relative mb-6 flex aspect-[4/5] items-end overflow-hidden rounded-2xl bg-gradient-to-br ${accents[idx]}`}>
-                  <div className="absolute inset-0 grid-lines opacity-30" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/10 to-transparent" />
-                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <span className="font-display text-[96px] font-bold leading-none tracking-tighter text-foreground/20 transition-all duration-700 group-hover:scale-110 group-hover:text-foreground/30">
-                      {t(`team.${i}.n`).split(" ").map((s) => s[0]).join("").slice(0, 2)}
-                    </span>
-                  </div>
-                  <div className="relative z-10 p-4 text-xs uppercase tracking-[0.18em] text-foreground/80">
-                    · 0{i}
+                <div className={`relative mb-6 aspect-[4/5] overflow-hidden rounded-2xl bg-gradient-to-br ${accents[idx]}`}>
+                  {/* Soft base wash */}
+                  <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_10%,oklch(0.22_0.03_260/.55),oklch(0.11_0.02_260))]" />
+                  <div className="absolute inset-0 grid-lines opacity-20" />
+                  {/* Dot portrait */}
+                  <DotPortrait
+                    seed={i * 37 + 11}
+                    color="#E7ECF3"
+                    accent={dotAccents[idx]}
+                    className="absolute inset-0 h-full w-full"
+                  />
+                  {/* Vignette + top gloss */}
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/85 via-background/5 to-transparent" />
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/[0.06] to-transparent" />
+                  {/* Corner index + monogram */}
+                  <div className="relative z-10 flex h-full flex-col justify-between p-4">
+                    <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.24em] text-foreground/70">
+                      <span>· 0{i}</span>
+                      <span className="font-mono text-foreground/60">{t(`team.${i}.n`).split(" ").map((s) => s[0]).join("").slice(0, 2)}</span>
+                    </div>
+                    <div className="text-[10px] uppercase tracking-[0.24em] text-foreground/60">
+                      cwh · hk
+                    </div>
                   </div>
                 </div>
                 <div className="font-display text-lg font-semibold tracking-tight">{t(`team.${i}.n`)}</div>
