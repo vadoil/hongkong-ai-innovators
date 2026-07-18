@@ -2,14 +2,13 @@ import { useEffect, useRef } from "react";
 
 export type PortraitVariant = {
   hair: "short" | "long" | "buzz" | "bun" | "wavy";
-  hairColor?: string;      // css color for hair fill on mask
-  skin?: number;           // 0..1 base tone (lighter = smaller shadow band)
+  hairColor?: string;
   glasses?: boolean;
   beard?: "none" | "stubble" | "full" | "goatee";
   brow?: "flat" | "arched" | "thick";
   lips?: "thin" | "full";
   jaw?: "narrow" | "wide";
-  tilt?: number;           // -1..1 slight horizontal offset
+  tilt?: number;
 };
 
 type Props = {
@@ -17,16 +16,16 @@ type Props = {
   color?: string;
   accent?: string;
   className?: string;
-  density?: number;         // point-count multiplier
+  density?: number;
   variant?: PortraitVariant;
 };
 
-/** Dense dot portrait: renders a shaded grayscale portrait on an offscreen canvas
- *  and samples thousands of dots weighted by darkness → a legible 3D-looking face
- *  built entirely from particles. */
+/** High-density stipple portrait: renders a shaded portrait on an offscreen
+ *  canvas, then samples thousands of tiny dots weighted by darkness so the
+ *  face reads as a fine stippling illustration (like ink pointillism). */
 export function DotPortrait({
   seed = 1,
-  color = "#E7ECF3",
+  color = "#F1F4F9",
   accent = "#3B82F6",
   className,
   density = 1,
@@ -44,7 +43,7 @@ export function DotPortrait({
     let W = 0, H = 0;
     const DPR = Math.min(2, window.devicePixelRatio || 1);
 
-    // ----- PRNG -----
+    // ----- deterministic PRNG -----
     const rand = (() => {
       let s = seed * 9301 + 49297;
       return () => {
@@ -53,19 +52,12 @@ export function DotPortrait({
       };
     })();
 
-    type P = {
-      x: number; y: number; tx: number; ty: number;
-      vx: number; vy: number;
-      r: number;              // base radius
-      w: number;              // weight (darkness 0..1)
-      hue: number;
-    };
+    type P = { x: number; y: number; tx: number; ty: number; r: number; w: number; hue: number; ph: number };
     let pts: P[] = [];
 
-    // ----- Offscreen mask (grayscale portrait) -----
-    // Mask is a "darkness" map in [0..1]: 0 = empty, 1 = darkest.
-    const MASK_W = 180;
-    const MASK_H = 225;
+    // ----- OFFSCREEN SHADED MASK -----
+    const MASK_W = 300;
+    const MASK_H = 375;
     let mask: Float32Array | null = null;
 
     function buildMask() {
@@ -73,280 +65,416 @@ export function DotPortrait({
       mc.width = MASK_W;
       mc.height = MASK_H;
       const g = mc.getContext("2d")!;
-      g.clearRect(0, 0, MASK_W, MASK_H);
 
       const tilt = variant.tilt ?? 0;
       const cx = MASK_W * (0.5 + tilt * 0.02);
-      const cy = MASK_H * 0.42;
+      const cy = MASK_H * 0.44;
       const jawWide = variant.jaw === "wide";
-      const faceRX = MASK_W * (jawWide ? 0.22 : 0.19);
-      const faceRY = MASK_H * 0.22;
+      const fRX = MASK_W * (jawWide ? 0.22 : 0.19);
+      const fRY = MASK_H * 0.22;
 
-      // Neck
-      g.fillStyle = "#666";
+      // ---------- Shoulders ----------
+      g.fillStyle = "#4A5260";
       g.beginPath();
-      g.ellipse(cx, cy + faceRY * 0.9, faceRX * 0.45, faceRY * 0.35, 0, 0, Math.PI * 2);
+      g.moveTo(cx - MASK_W * 0.5, MASK_H + 30);
+      g.quadraticCurveTo(cx - MASK_W * 0.42, cy + fRY * 1.25, cx, cy + fRY * 1.15);
+      g.quadraticCurveTo(cx + MASK_W * 0.42, cy + fRY * 1.25, cx + MASK_W * 0.5, MASK_H + 30);
+      g.closePath();
       g.fill();
-
-      // Shoulders
-      const shoY = cy + faceRY * 1.15;
-      g.fillStyle = "#555";
+      // shoulder shadow (top curve)
+      const shGrad = g.createLinearGradient(0, cy + fRY * 1.1, 0, MASK_H);
+      shGrad.addColorStop(0, "rgba(0,0,0,0.35)");
+      shGrad.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = shGrad;
       g.beginPath();
-      g.moveTo(cx - MASK_W * 0.42, MASK_H + 20);
-      g.quadraticCurveTo(cx - MASK_W * 0.38, shoY, cx, shoY + 8);
-      g.quadraticCurveTo(cx + MASK_W * 0.38, shoY, cx + MASK_W * 0.42, MASK_H + 20);
+      g.moveTo(cx - MASK_W * 0.5, MASK_H + 30);
+      g.quadraticCurveTo(cx - MASK_W * 0.42, cy + fRY * 1.25, cx, cy + fRY * 1.15);
+      g.quadraticCurveTo(cx + MASK_W * 0.42, cy + fRY * 1.25, cx + MASK_W * 0.5, MASK_H + 30);
       g.closePath();
       g.fill();
 
-      // Face base (shaded sphere, light top-left)
+      // ---------- Neck ----------
+      g.fillStyle = "#6B7280";
+      g.beginPath();
+      g.ellipse(cx, cy + fRY * 0.95, fRX * 0.55, fRY * 0.4, 0, 0, Math.PI * 2);
+      g.fill();
+      // neck side shadow
+      const nGrad = g.createLinearGradient(cx - fRX * 0.55, 0, cx + fRX * 0.55, 0);
+      nGrad.addColorStop(0, "rgba(255,255,255,0.05)");
+      nGrad.addColorStop(0.5, "rgba(0,0,0,0)");
+      nGrad.addColorStop(1, "rgba(0,0,0,0.35)");
+      g.fillStyle = nGrad;
+      g.beginPath();
+      g.ellipse(cx, cy + fRY * 0.95, fRX * 0.55, fRY * 0.4, 0, 0, Math.PI * 2);
+      g.fill();
+
+      // ---------- Face base (shaded sphere, light top-left) ----------
       const faceGrad = g.createRadialGradient(
-        cx - faceRX * 0.35, cy - faceRY * 0.45, faceRX * 0.15,
-        cx, cy, faceRX * 1.3,
+        cx - fRX * 0.4, cy - fRY * 0.5, fRX * 0.1,
+        cx + fRX * 0.15, cy + fRY * 0.2, fRX * 1.5,
       );
-      faceGrad.addColorStop(0, "#B8BEC8");
-      faceGrad.addColorStop(0.55, "#7A8290");
-      faceGrad.addColorStop(1, "#3A424D");
+      faceGrad.addColorStop(0, "#C8CFD8");   // highlight
+      faceGrad.addColorStop(0.35, "#8E96A2");
+      faceGrad.addColorStop(0.7, "#5A626F");
+      faceGrad.addColorStop(1, "#2C323C");   // shadow
       g.fillStyle = faceGrad;
       g.beginPath();
-      g.ellipse(cx, cy, faceRX, faceRY, 0, 0, Math.PI * 2);
+      g.ellipse(cx, cy, fRX, fRY, 0, 0, Math.PI * 2);
       g.fill();
 
-      // Side shadow (right side darker for form)
-      const sideGrad = g.createLinearGradient(cx - faceRX, 0, cx + faceRX, 0);
-      sideGrad.addColorStop(0, "rgba(0,0,0,0)");
-      sideGrad.addColorStop(0.55, "rgba(0,0,0,0)");
-      sideGrad.addColorStop(1, "rgba(0,0,0,0.55)");
-      g.fillStyle = sideGrad;
+      // Right side rim shadow
+      const rimGrad = g.createLinearGradient(cx - fRX, 0, cx + fRX, 0);
+      rimGrad.addColorStop(0, "rgba(0,0,0,0)");
+      rimGrad.addColorStop(0.62, "rgba(0,0,0,0)");
+      rimGrad.addColorStop(1, "rgba(0,0,0,0.55)");
+      g.fillStyle = rimGrad;
       g.beginPath();
-      g.ellipse(cx, cy, faceRX, faceRY, 0, 0, Math.PI * 2);
+      g.ellipse(cx, cy, fRX, fRY, 0, 0, Math.PI * 2);
       g.fill();
 
-      // Jawline shadow (bottom)
-      const jawGrad = g.createLinearGradient(0, cy, 0, cy + faceRY);
-      jawGrad.addColorStop(0, "rgba(0,0,0,0)");
-      jawGrad.addColorStop(1, "rgba(0,0,0,0.5)");
-      g.fillStyle = jawGrad;
+      // Chin shadow (bottom)
+      const chGrad = g.createLinearGradient(0, cy + fRY * 0.2, 0, cy + fRY * 1.05);
+      chGrad.addColorStop(0, "rgba(0,0,0,0)");
+      chGrad.addColorStop(1, "rgba(0,0,0,0.6)");
+      g.fillStyle = chGrad;
       g.beginPath();
-      g.ellipse(cx, cy, faceRX * 0.98, faceRY * 0.98, 0, 0, Math.PI * 2);
+      g.ellipse(cx, cy, fRX, fRY, 0, 0, Math.PI * 2);
       g.fill();
 
-      // Hair
-      const hairColor = variant.hairColor ?? "#0A0D12";
+      // Cheekbone highlight
+      const cheekL = g.createRadialGradient(cx - fRX * 0.55, cy + fRY * 0.15, 2, cx - fRX * 0.55, cy + fRY * 0.15, fRX * 0.4);
+      cheekL.addColorStop(0, "rgba(255,255,255,0.18)");
+      cheekL.addColorStop(1, "rgba(255,255,255,0)");
+      g.fillStyle = cheekL;
+      g.beginPath();
+      g.ellipse(cx, cy, fRX, fRY, 0, 0, Math.PI * 2);
+      g.fill();
+
+      // Forehead highlight
+      const foreG = g.createRadialGradient(cx - fRX * 0.2, cy - fRY * 0.55, 2, cx - fRX * 0.2, cy - fRY * 0.55, fRX * 0.6);
+      foreG.addColorStop(0, "rgba(255,255,255,0.15)");
+      foreG.addColorStop(1, "rgba(255,255,255,0)");
+      g.fillStyle = foreG;
+      g.beginPath();
+      g.ellipse(cx, cy, fRX, fRY, 0, 0, Math.PI * 2);
+      g.fill();
+
+      // ---------- Hair ----------
+      const hairColor = variant.hairColor ?? "#08090C";
       g.fillStyle = hairColor;
       const drawHair = () => {
         switch (variant.hair) {
           case "buzz":
             g.beginPath();
-            g.ellipse(cx, cy - faceRY * 0.55, faceRX * 1.02, faceRY * 0.5, 0, Math.PI, 0);
+            g.ellipse(cx, cy - fRY * 0.62, fRX * 1.02, fRY * 0.5, 0, Math.PI, 0);
             g.fill();
             break;
           case "long":
-            // top mass
             g.beginPath();
-            g.ellipse(cx, cy - faceRY * 0.45, faceRX * 1.18, faceRY * 0.75, 0, 0, Math.PI * 2);
+            g.ellipse(cx, cy - fRY * 0.45, fRX * 1.22, fRY * 0.78, 0, 0, Math.PI * 2);
             g.fill();
-            // side curtains down past jaw
             g.beginPath();
-            g.moveTo(cx - faceRX * 1.15, cy - faceRY * 0.4);
-            g.quadraticCurveTo(cx - faceRX * 1.4, cy + faceRY * 0.4, cx - faceRX * 0.9, cy + faceRY * 1.05);
-            g.quadraticCurveTo(cx - faceRX * 0.6, cy + faceRY * 0.6, cx - faceRX * 0.75, cy - faceRY * 0.1);
+            g.moveTo(cx - fRX * 1.18, cy - fRY * 0.35);
+            g.quadraticCurveTo(cx - fRX * 1.45, cy + fRY * 0.5, cx - fRX * 0.85, cy + fRY * 1.15);
+            g.quadraticCurveTo(cx - fRX * 0.55, cy + fRY * 0.65, cx - fRX * 0.75, cy - fRY * 0.05);
             g.closePath();
             g.fill();
             g.beginPath();
-            g.moveTo(cx + faceRX * 1.15, cy - faceRY * 0.4);
-            g.quadraticCurveTo(cx + faceRX * 1.4, cy + faceRY * 0.4, cx + faceRX * 0.9, cy + faceRY * 1.05);
-            g.quadraticCurveTo(cx + faceRX * 0.6, cy + faceRY * 0.6, cx + faceRX * 0.75, cy - faceRY * 0.1);
+            g.moveTo(cx + fRX * 1.18, cy - fRY * 0.35);
+            g.quadraticCurveTo(cx + fRX * 1.45, cy + fRY * 0.5, cx + fRX * 0.85, cy + fRY * 1.15);
+            g.quadraticCurveTo(cx + fRX * 0.55, cy + fRY * 0.65, cx + fRX * 0.75, cy - fRY * 0.05);
             g.closePath();
             g.fill();
             break;
           case "wavy":
             g.beginPath();
-            g.ellipse(cx - faceRX * 0.15, cy - faceRY * 0.55, faceRX * 1.15, faceRY * 0.7, -0.15, 0, Math.PI * 2);
+            g.ellipse(cx - fRX * 0.15, cy - fRY * 0.6, fRX * 1.18, fRY * 0.75, -0.15, 0, Math.PI * 2);
             g.fill();
             g.beginPath();
-            g.ellipse(cx + faceRX * 0.2, cy - faceRY * 0.5, faceRX * 0.9, faceRY * 0.55, 0.1, 0, Math.PI * 2);
+            g.ellipse(cx + fRX * 0.22, cy - fRY * 0.55, fRX * 0.95, fRY * 0.6, 0.1, 0, Math.PI * 2);
             g.fill();
             break;
           case "bun":
             g.beginPath();
-            g.ellipse(cx, cy - faceRY * 0.45, faceRX * 1.05, faceRY * 0.55, 0, 0, Math.PI * 2);
+            g.ellipse(cx, cy - fRY * 0.5, fRX * 1.08, fRY * 0.6, 0, 0, Math.PI * 2);
             g.fill();
             g.beginPath();
-            g.arc(cx + faceRX * 0.45, cy - faceRY * 1.05, faceRX * 0.45, 0, Math.PI * 2);
+            g.arc(cx + fRX * 0.55, cy - fRY * 1.15, fRX * 0.5, 0, Math.PI * 2);
+            g.fill();
+            // hair strands framing face
+            g.beginPath();
+            g.moveTo(cx - fRX * 1.0, cy - fRY * 0.2);
+            g.quadraticCurveTo(cx - fRX * 0.85, cy + fRY * 0.3, cx - fRX * 0.55, cy + fRY * 0.2);
+            g.quadraticCurveTo(cx - fRX * 0.9, cy - fRY * 0.1, cx - fRX * 1.0, cy - fRY * 0.2);
+            g.closePath();
             g.fill();
             break;
           case "short":
           default:
             g.beginPath();
-            g.ellipse(cx, cy - faceRY * 0.5, faceRX * 1.08, faceRY * 0.6, 0, 0, Math.PI * 2);
+            g.ellipse(cx, cy - fRY * 0.55, fRX * 1.1, fRY * 0.65, 0, 0, Math.PI * 2);
             g.fill();
-            // side fade
+            // side sweep
             g.beginPath();
-            g.moveTo(cx - faceRX * 1.05, cy - faceRY * 0.3);
-            g.quadraticCurveTo(cx - faceRX * 1.05, cy - faceRY * 0.9, cx, cy - faceRY * 1.05);
-            g.quadraticCurveTo(cx + faceRX * 1.05, cy - faceRY * 0.9, cx + faceRX * 1.05, cy - faceRY * 0.3);
-            g.lineTo(cx + faceRX * 0.9, cy - faceRY * 0.1);
-            g.quadraticCurveTo(cx, cy - faceRY * 0.45, cx - faceRX * 0.9, cy - faceRY * 0.1);
+            g.moveTo(cx - fRX * 1.06, cy - fRY * 0.3);
+            g.quadraticCurveTo(cx - fRX * 1.1, cy - fRY * 0.95, cx, cy - fRY * 1.12);
+            g.quadraticCurveTo(cx + fRX * 1.1, cy - fRY * 0.95, cx + fRX * 1.06, cy - fRY * 0.3);
+            g.lineTo(cx + fRX * 0.9, cy - fRY * 0.05);
+            g.quadraticCurveTo(cx, cy - fRY * 0.5, cx - fRX * 0.9, cy - fRY * 0.05);
             g.closePath();
             g.fill();
         }
       };
       drawHair();
 
-      // ----- Facial features -----
-      const eyeY = cy - faceRY * 0.08;
-      const eyeDX = faceRX * 0.42;
-      const eyeRX = faceRX * 0.16;
-      const eyeRY = faceRY * 0.08;
+      // Hair strands / streaks for texture (fine dark lines)
+      g.strokeStyle = "#02040A";
+      g.lineWidth = 0.6;
+      g.lineCap = "round";
+      const strandCount = variant.hair === "buzz" ? 40 : 90;
+      for (let i = 0; i < strandCount; i++) {
+        const a = -Math.PI * 0.9 + (rand()) * Math.PI * 0.8; // arc across top
+        const rr = fRX * (0.6 + rand() * 0.55);
+        const x0 = cx + Math.cos(a) * rr * 0.9;
+        const y0 = cy + Math.sin(a) * rr * 0.9 - fRY * 0.25;
+        const len = fRY * (0.15 + rand() * 0.35);
+        const dir = a; // radiate outward
+        g.beginPath();
+        g.moveTo(x0, y0);
+        g.lineTo(x0 + Math.cos(dir) * len, y0 + Math.sin(dir) * len - fRY * 0.05);
+        g.stroke();
+      }
 
-      // Eye sockets (soft shadow)
-      const drawEyeSocket = (ex: number) => {
-        const rg = g.createRadialGradient(ex, eyeY, 1, ex, eyeY, eyeRX * 1.8);
-        rg.addColorStop(0, "rgba(0,0,0,0.55)");
+      // ---------- Features ----------
+      const eyeY = cy - fRY * 0.06;
+      const eyeDX = fRX * 0.42;
+      const eyeRX = fRX * 0.17;
+      const eyeRY = fRY * 0.09;
+
+      // Eye socket shadow
+      const drawSocket = (ex: number) => {
+        const rg = g.createRadialGradient(ex, eyeY, 1, ex, eyeY, eyeRX * 2.0);
+        rg.addColorStop(0, "rgba(0,0,0,0.6)");
         rg.addColorStop(1, "rgba(0,0,0,0)");
         g.fillStyle = rg;
         g.beginPath();
-        g.ellipse(ex, eyeY, eyeRX * 1.8, eyeRY * 2.0, 0, 0, Math.PI * 2);
+        g.ellipse(ex, eyeY, eyeRX * 2.0, eyeRY * 2.2, 0, 0, Math.PI * 2);
         g.fill();
       };
-      drawEyeSocket(cx - eyeDX);
-      drawEyeSocket(cx + eyeDX);
+      drawSocket(cx - eyeDX);
+      drawSocket(cx + eyeDX);
 
       // Eye whites
-      g.fillStyle = "#DDE3EC";
+      g.fillStyle = "#E4E9F0";
       g.beginPath();
       g.ellipse(cx - eyeDX, eyeY, eyeRX, eyeRY, 0, 0, Math.PI * 2);
       g.ellipse(cx + eyeDX, eyeY, eyeRX, eyeRY, 0, 0, Math.PI * 2);
       g.fill();
 
       // Iris + pupil
-      g.fillStyle = "#111418";
+      g.fillStyle = "#0C0F14";
       g.beginPath();
-      g.arc(cx - eyeDX, eyeY, eyeRY * 0.95, 0, Math.PI * 2);
-      g.arc(cx + eyeDX, eyeY, eyeRY * 0.95, 0, Math.PI * 2);
+      g.arc(cx - eyeDX, eyeY, eyeRY * 0.98, 0, Math.PI * 2);
+      g.arc(cx + eyeDX, eyeY, eyeRY * 0.98, 0, Math.PI * 2);
       g.fill();
       // Catchlight
-      g.fillStyle = "#F0F3F8";
+      g.fillStyle = "#F5F7FB";
       g.beginPath();
-      g.arc(cx - eyeDX - eyeRY * 0.25, eyeY - eyeRY * 0.3, eyeRY * 0.25, 0, Math.PI * 2);
-      g.arc(cx + eyeDX - eyeRY * 0.25, eyeY - eyeRY * 0.3, eyeRY * 0.25, 0, Math.PI * 2);
+      g.arc(cx - eyeDX - eyeRY * 0.25, eyeY - eyeRY * 0.3, eyeRY * 0.28, 0, Math.PI * 2);
+      g.arc(cx + eyeDX - eyeRY * 0.25, eyeY - eyeRY * 0.3, eyeRY * 0.28, 0, Math.PI * 2);
       g.fill();
+
+      // Upper eyelid shadow (dark band above eye)
+      const drawLidShadow = (ex: number) => {
+        const lg = g.createLinearGradient(0, eyeY - eyeRY * 1.6, 0, eyeY);
+        lg.addColorStop(0, "rgba(0,0,0,0)");
+        lg.addColorStop(0.7, "rgba(0,0,0,0.55)");
+        lg.addColorStop(1, "rgba(0,0,0,0.75)");
+        g.fillStyle = lg;
+        g.beginPath();
+        g.ellipse(ex, eyeY - eyeRY * 0.6, eyeRX * 1.35, eyeRY * 1.1, 0, 0, Math.PI * 2);
+        g.fill();
+      };
+      drawLidShadow(cx - eyeDX);
+      drawLidShadow(cx + eyeDX);
+
+      // Lash line
+      g.strokeStyle = "#02040A";
+      g.lineWidth = 1.4;
+      g.beginPath();
+      g.moveTo(cx - eyeDX - eyeRX, eyeY - eyeRY * 0.15);
+      g.quadraticCurveTo(cx - eyeDX, eyeY - eyeRY * 0.85, cx - eyeDX + eyeRX, eyeY - eyeRY * 0.15);
+      g.moveTo(cx + eyeDX - eyeRX, eyeY - eyeRY * 0.15);
+      g.quadraticCurveTo(cx + eyeDX, eyeY - eyeRY * 0.85, cx + eyeDX + eyeRX, eyeY - eyeRY * 0.15);
+      g.stroke();
 
       // Brows
-      const browThick = variant.brow === "thick" ? faceRY * 0.06 : faceRY * 0.035;
-      const drawBrow = (ex: number, dir: 1 | -1) => {
-        g.strokeStyle = "#0A0D12";
-        g.lineWidth = browThick;
-        g.lineCap = "round";
-        g.beginPath();
-        const arch = variant.brow === "arched" ? faceRY * 0.03 : faceRY * 0.012;
-        g.moveTo(ex - eyeRX * 1.1, eyeY - eyeRY * 1.8);
-        g.quadraticCurveTo(ex, eyeY - eyeRY * 1.8 - arch, ex + eyeRX * 1.1, eyeY - eyeRY * 1.8 + dir * 0.5);
-        g.stroke();
-      };
-      drawBrow(cx - eyeDX, 1);
-      drawBrow(cx + eyeDX, -1);
-
-      // Nose (bridge highlight + tip shadow)
-      const noseCy = cy + faceRY * 0.05;
-      const noseShadow = g.createLinearGradient(cx - faceRX * 0.1, 0, cx + faceRX * 0.1, 0);
-      noseShadow.addColorStop(0, "rgba(255,255,255,0.08)");
-      noseShadow.addColorStop(0.55, "rgba(255,255,255,0)");
-      noseShadow.addColorStop(1, "rgba(0,0,0,0.35)");
-      g.fillStyle = noseShadow;
+      const browThick = variant.brow === "thick" ? fRY * 0.06 : variant.brow === "arched" ? fRY * 0.035 : fRY * 0.04;
+      g.strokeStyle = "#04060B";
+      g.lineWidth = browThick;
+      g.lineCap = "round";
+      const arch = variant.brow === "arched" ? fRY * 0.045 : fRY * 0.018;
       g.beginPath();
-      g.moveTo(cx - faceRX * 0.08, eyeY);
-      g.quadraticCurveTo(cx - faceRX * 0.12, noseCy, cx - faceRX * 0.05, noseCy + faceRY * 0.15);
-      g.quadraticCurveTo(cx, noseCy + faceRY * 0.2, cx + faceRX * 0.05, noseCy + faceRY * 0.15);
-      g.quadraticCurveTo(cx + faceRX * 0.12, noseCy, cx + faceRX * 0.08, eyeY);
+      g.moveTo(cx - eyeDX - eyeRX * 1.15, eyeY - eyeRY * 2.0);
+      g.quadraticCurveTo(cx - eyeDX, eyeY - eyeRY * 2.0 - arch, cx - eyeDX + eyeRX * 1.15, eyeY - eyeRY * 1.85);
+      g.moveTo(cx + eyeDX - eyeRX * 1.15, eyeY - eyeRY * 1.85);
+      g.quadraticCurveTo(cx + eyeDX, eyeY - eyeRY * 2.0 - arch, cx + eyeDX + eyeRX * 1.15, eyeY - eyeRY * 2.0);
+      g.stroke();
+
+      // Nose bridge + tip shadow
+      const noseCy = cy + fRY * 0.08;
+      const noseGrad = g.createLinearGradient(cx - fRX * 0.1, 0, cx + fRX * 0.14, 0);
+      noseGrad.addColorStop(0, "rgba(255,255,255,0.12)");
+      noseGrad.addColorStop(0.5, "rgba(0,0,0,0)");
+      noseGrad.addColorStop(1, "rgba(0,0,0,0.5)");
+      g.fillStyle = noseGrad;
+      g.beginPath();
+      g.moveTo(cx - fRX * 0.09, eyeY);
+      g.quadraticCurveTo(cx - fRX * 0.14, noseCy, cx - fRX * 0.07, noseCy + fRY * 0.17);
+      g.quadraticCurveTo(cx, noseCy + fRY * 0.22, cx + fRX * 0.07, noseCy + fRY * 0.17);
+      g.quadraticCurveTo(cx + fRX * 0.14, noseCy, cx + fRX * 0.09, eyeY);
       g.closePath();
       g.fill();
-      // Nostril hints
-      g.fillStyle = "rgba(0,0,0,0.45)";
+
+      // Nose tip shadow (round)
+      const tipG = g.createRadialGradient(cx, noseCy + fRY * 0.19, 1, cx, noseCy + fRY * 0.19, fRX * 0.18);
+      tipG.addColorStop(0, "rgba(0,0,0,0.4)");
+      tipG.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = tipG;
       g.beginPath();
-      g.ellipse(cx - faceRX * 0.06, noseCy + faceRY * 0.17, faceRX * 0.025, faceRY * 0.012, 0, 0, Math.PI * 2);
-      g.ellipse(cx + faceRX * 0.06, noseCy + faceRY * 0.17, faceRX * 0.025, faceRY * 0.012, 0, 0, Math.PI * 2);
+      g.arc(cx, noseCy + fRY * 0.19, fRX * 0.18, 0, Math.PI * 2);
       g.fill();
 
-      // Lips
-      const mouthY = cy + faceRY * 0.42;
-      const mouthW = faceRX * 0.55;
+      // Nostrils
+      g.fillStyle = "rgba(0,0,0,0.65)";
+      g.beginPath();
+      g.ellipse(cx - fRX * 0.075, noseCy + fRY * 0.2, fRX * 0.028, fRY * 0.012, 0.2, 0, Math.PI * 2);
+      g.ellipse(cx + fRX * 0.075, noseCy + fRY * 0.2, fRX * 0.028, fRY * 0.012, -0.2, 0, Math.PI * 2);
+      g.fill();
+
+      // Philtrum shadow
+      g.strokeStyle = "rgba(0,0,0,0.28)";
+      g.lineWidth = 1;
+      g.beginPath();
+      g.moveTo(cx, noseCy + fRY * 0.24);
+      g.lineTo(cx, noseCy + fRY * 0.34);
+      g.stroke();
+
+      // ---------- Lips ----------
+      const mouthY = cy + fRY * 0.5;
+      const mouthW = fRX * (variant.lips === "full" ? 0.62 : 0.5);
       const lipsFull = variant.lips === "full";
-      // Upper lip shadow line
-      g.strokeStyle = "rgba(0,0,0,0.55)";
-      g.lineWidth = lipsFull ? faceRY * 0.035 : faceRY * 0.022;
+
+      // Upper lip fill (darker)
+      g.fillStyle = "rgba(30,20,25,0.55)";
+      g.beginPath();
+      g.moveTo(cx - mouthW, mouthY);
+      g.quadraticCurveTo(cx - mouthW * 0.55, mouthY - fRY * 0.05, cx - mouthW * 0.15, mouthY - fRY * 0.02);
+      g.quadraticCurveTo(cx, mouthY - fRY * 0.05, cx + mouthW * 0.15, mouthY - fRY * 0.02);
+      g.quadraticCurveTo(cx + mouthW * 0.55, mouthY - fRY * 0.05, cx + mouthW, mouthY);
+      g.quadraticCurveTo(cx, mouthY + fRY * 0.015, cx - mouthW, mouthY);
+      g.closePath();
+      g.fill();
+
+      // Lower lip fill (softer)
+      g.fillStyle = "rgba(45,30,35,0.45)";
+      g.beginPath();
+      g.moveTo(cx - mouthW * 0.95, mouthY + fRY * 0.005);
+      g.quadraticCurveTo(cx, mouthY + fRY * (lipsFull ? 0.11 : 0.07), cx + mouthW * 0.95, mouthY + fRY * 0.005);
+      g.quadraticCurveTo(cx, mouthY + fRY * (lipsFull ? 0.13 : 0.09), cx - mouthW * 0.95, mouthY + fRY * 0.005);
+      g.closePath();
+      g.fill();
+
+      // Mouth line (crisp dark)
+      g.strokeStyle = "rgba(0,0,0,0.85)";
+      g.lineWidth = 1.8;
       g.lineCap = "round";
       g.beginPath();
       g.moveTo(cx - mouthW, mouthY);
-      g.quadraticCurveTo(cx, mouthY + faceRY * 0.02, cx + mouthW, mouthY);
+      g.quadraticCurveTo(cx - mouthW * 0.5, mouthY + fRY * 0.018, cx, mouthY + fRY * 0.005);
+      g.quadraticCurveTo(cx + mouthW * 0.5, mouthY + fRY * 0.018, cx + mouthW, mouthY);
       g.stroke();
-      // Cupid's bow + lower lip shading
-      if (lipsFull) {
-        g.fillStyle = "rgba(0,0,0,0.25)";
-        g.beginPath();
-        g.ellipse(cx, mouthY + faceRY * 0.06, mouthW * 0.9, faceRY * 0.045, 0, 0, Math.PI * 2);
-        g.fill();
-      }
 
-      // Chin shadow line
+      // Lower lip highlight
+      const lipHi = g.createRadialGradient(cx, mouthY + fRY * 0.07, 1, cx, mouthY + fRY * 0.07, mouthW * 0.6);
+      lipHi.addColorStop(0, "rgba(255,255,255,0.14)");
+      lipHi.addColorStop(1, "rgba(255,255,255,0)");
+      g.fillStyle = lipHi;
+      g.beginPath();
+      g.ellipse(cx, mouthY + fRY * 0.07, mouthW * 0.7, fRY * 0.045, 0, 0, Math.PI * 2);
+      g.fill();
+
+      // Chin dimple / shadow line
       g.strokeStyle = "rgba(0,0,0,0.3)";
       g.lineWidth = 1;
       g.beginPath();
-      g.moveTo(cx - faceRX * 0.12, mouthY + faceRY * 0.28);
-      g.quadraticCurveTo(cx, mouthY + faceRY * 0.32, cx + faceRX * 0.12, mouthY + faceRY * 0.28);
+      g.moveTo(cx - fRX * 0.1, mouthY + fRY * 0.28);
+      g.quadraticCurveTo(cx, mouthY + fRY * 0.34, cx + fRX * 0.1, mouthY + fRY * 0.28);
       g.stroke();
 
-      // Beard
+      // ---------- Beard ----------
       if (variant.beard && variant.beard !== "none") {
-        g.fillStyle = variant.beard === "stubble" ? "rgba(10,13,18,0.45)" : "#0A0D12";
+        g.fillStyle = variant.beard === "stubble" ? "rgba(8,10,14,0.55)" : "#050709";
         g.beginPath();
         if (variant.beard === "goatee") {
-          g.ellipse(cx, mouthY + faceRY * 0.25, faceRX * 0.25, faceRY * 0.18, 0, 0, Math.PI * 2);
+          g.ellipse(cx, mouthY + fRY * 0.28, fRX * 0.27, fRY * 0.19, 0, 0, Math.PI * 2);
         } else {
-          // full / stubble: jaw wrap
-          g.moveTo(cx - faceRX * 0.95, cy + faceRY * 0.1);
-          g.quadraticCurveTo(cx - faceRX * 0.75, cy + faceRY * 0.95, cx, cy + faceRY * 1.0);
-          g.quadraticCurveTo(cx + faceRX * 0.75, cy + faceRY * 0.95, cx + faceRX * 0.95, cy + faceRY * 0.1);
-          g.quadraticCurveTo(cx + faceRX * 0.7, cy + faceRY * 0.55, cx, cy + faceRY * 0.5);
-          g.quadraticCurveTo(cx - faceRX * 0.7, cy + faceRY * 0.55, cx - faceRX * 0.95, cy + faceRY * 0.1);
+          g.moveTo(cx - fRX * 0.98, cy + fRY * 0.15);
+          g.quadraticCurveTo(cx - fRX * 0.78, cy + fRY * 1.02, cx, cy + fRY * 1.05);
+          g.quadraticCurveTo(cx + fRX * 0.78, cy + fRY * 1.02, cx + fRX * 0.98, cy + fRY * 0.15);
+          g.quadraticCurveTo(cx + fRX * 0.7, cy + fRY * 0.6, cx, cy + fRY * 0.55);
+          g.quadraticCurveTo(cx - fRX * 0.7, cy + fRY * 0.6, cx - fRX * 0.98, cy + fRY * 0.15);
         }
         g.closePath();
         g.fill();
+
+        // Mustache
+        if (variant.beard !== "goatee") {
+          g.fillStyle = "#040508";
+          g.beginPath();
+          g.moveTo(cx - mouthW * 1.1, mouthY - fRY * 0.03);
+          g.quadraticCurveTo(cx - mouthW * 0.5, mouthY - fRY * 0.11, cx, mouthY - fRY * 0.05);
+          g.quadraticCurveTo(cx + mouthW * 0.5, mouthY - fRY * 0.11, cx + mouthW * 1.1, mouthY - fRY * 0.03);
+          g.quadraticCurveTo(cx, mouthY - fRY * 0.02, cx - mouthW * 1.1, mouthY - fRY * 0.03);
+          g.closePath();
+          g.fill();
+        }
       }
 
-      // Glasses
+      // ---------- Glasses ----------
       if (variant.glasses) {
-        g.strokeStyle = "#0A0D12";
-        g.lineWidth = Math.max(1.5, faceRX * 0.03);
-        const rgx = faceRX * 0.22;
-        const rgy = faceRY * 0.14;
+        g.strokeStyle = "#03050A";
+        g.lineWidth = Math.max(1.8, fRX * 0.032);
+        const rgx = fRX * 0.26;
+        const rgy = fRY * 0.17;
         g.beginPath();
         g.ellipse(cx - eyeDX, eyeY, rgx, rgy, 0, 0, Math.PI * 2);
         g.ellipse(cx + eyeDX, eyeY, rgx, rgy, 0, 0, Math.PI * 2);
         g.stroke();
-        // Bridge
         g.beginPath();
         g.moveTo(cx - eyeDX + rgx, eyeY);
         g.lineTo(cx + eyeDX - rgx, eyeY);
-        g.stroke();
-        // Temples
-        g.beginPath();
         g.moveTo(cx - eyeDX - rgx, eyeY);
-        g.lineTo(cx - faceRX, eyeY - faceRY * 0.03);
+        g.lineTo(cx - fRX, eyeY - fRY * 0.02);
         g.moveTo(cx + eyeDX + rgx, eyeY);
-        g.lineTo(cx + faceRX, eyeY - faceRY * 0.03);
+        g.lineTo(cx + fRX, eyeY - fRY * 0.02);
         g.stroke();
       }
 
-      // Convert to darkness map
+      // ---------- Convert to darkness map ----------
       const img = g.getImageData(0, 0, MASK_W, MASK_H).data;
       const m = new Float32Array(MASK_W * MASK_H);
       for (let i = 0, j = 0; i < img.length; i += 4, j++) {
         const a = img[i + 3] / 255;
         if (a < 0.02) { m[j] = 0; continue; }
-        // darkness = 1 - luminance (weighted by alpha)
         const lum = (0.2126 * img[i] + 0.7152 * img[i + 1] + 0.0722 * img[i + 2]) / 255;
-        m[j] = a * (1 - lum * 0.75); // keep bright areas still sample-worthy
+        // We render on a DARK card, so invert stipple: densest dots go into
+        // the LIT areas (highlights on the face), sparser dots trail off into
+        // shadow. This lets faces read as a bright "phosphor" portrait rather
+        // than getting swallowed by the dark background.
+        // Give shadows a minimum floor so the silhouette stays perceptible.
+        const brightness = Math.pow(lum, 0.85);
+        m[j] = a * Math.max(0.08, brightness);
       }
       mask = m;
     }
@@ -369,89 +497,89 @@ export function DotPortrait({
 
     function seedPoints() {
       pts = [];
-      const target = Math.floor((W * H) / 45 * density); // ~5-6x denser than before
+      const area = W * H;
+      // ~18k points on a ~220x275 card; scales with area & density prop
+      const target = Math.floor(area / 6 * density);
       let tries = 0;
-      const maxTries = target * 30;
+      const maxTries = target * 40;
       while (pts.length < target && tries < maxTries) {
         tries++;
         const nx = rand();
         const ny = rand();
         const w = sampleMask(nx, ny);
-        if (w <= 0.01) continue;
-        // Rejection sampling — probability = w
-        if (rand() > Math.min(1, w * 1.25)) continue;
+        if (w <= 0.03) continue;
+        // Rejection sampling — probability skews toward brighter (lit) regions,
+        // but stays generous so silhouette + shadow gradients fill in.
+        if (rand() > Math.min(1, w * 1.8)) continue;
         const x = nx * W;
         const y = ny * H;
         pts.push({
-          x: x + (rand() - 0.5) * 30,
-          y: y + (rand() - 0.5) * 30,
-          tx: x, ty: y,
-          vx: 0, vy: 0,
-          r: 0.5 + (1 - w) * 0.6 + rand() * 0.5, // lighter → slightly bigger; keeps texture
+          x, y, tx: x, ty: y,
+          r: 0.35 + rand() * 0.7,
           w,
           hue: rand(),
+          ph: rand() * Math.PI * 2,
         });
       }
     }
 
-    let t0 = performance.now();
+    // Pre-parse main colors so we can bucket points by color and reduce fill switches
     function frame(now: number) {
-      const dt = Math.min(48, now - t0); t0 = now;
       ctx.clearRect(0, 0, W, H);
-
       const mx = mouse.current.x, my = mouse.current.y, active = mouse.current.active;
+
+      // Bucket points by fill for path batching
+      // 5 buckets — all LIGHT tones, differing only by brightness/opacity so
+      // the stippling reads on a dark card. Density drives shading.
+      const paths = [
+        { fill: "#FFFFFF", alpha: 0.98, path: new Path2D() }, // hottest highlights
+        { fill: color,     alpha: 0.9,  path: new Path2D() }, // main skin tone
+        { fill: "#C7CED9", alpha: 0.78, path: new Path2D() }, // mid
+        { fill: "#7C8494", alpha: 0.55, path: new Path2D() }, // shadow (subtle)
+        { fill: accent,    alpha: 0.95, path: new Path2D() }, // color sparkle
+      ];
 
       for (let i = 0; i < pts.length; i++) {
         const p = pts[i];
-        const dx = p.tx - p.x;
-        const dy = p.ty - p.y;
-        p.vx += dx * 0.01;
-        p.vy += dy * 0.01;
+        // Cheap breathing wobble around anchor (no acceleration integration)
+        const wob = Math.sin(now * 0.0011 + p.ph) * 0.9;
+        const wob2 = Math.cos(now * 0.0009 + p.ph * 1.3) * 0.7;
+        let x = p.tx + wob;
+        let y = p.ty + wob2;
 
-        // Subtle ambient breath
-        p.vx += Math.sin(now * 0.0008 + p.hue * 6.28) * 0.03;
-        p.vy += Math.cos(now * 0.0009 + p.hue * 6.28) * 0.03;
-
+        // Cursor scatter (only for points close to cursor)
         if (active) {
-          const rx = p.x - mx;
-          const ry = p.y - my;
+          const rx = x - mx;
+          const ry = y - my;
           const d2 = rx * rx + ry * ry;
-          if (d2 < 80 * 80) {
-            const f = (1 - d2 / (80 * 80)) * 1.3;
-            p.vx += (rx / Math.sqrt(d2 + 0.01)) * f;
-            p.vy += (ry / Math.sqrt(d2 + 0.01)) * f;
+          if (d2 < 70 * 70) {
+            const f = (1 - d2 / (70 * 70)) * 12;
+            const inv = 1 / Math.sqrt(d2 + 0.01);
+            x += rx * inv * f;
+            y += ry * inv * f;
           }
         }
 
-        p.vx *= 0.85; p.vy *= 0.85;
-        p.x += p.vx * (dt / 16);
-        p.y += p.vy * (dt / 16);
+        // Bucket selection: brighter mask value → brighter/denser bucket
+        let b: number;
+        if (p.hue > 0.985) b = 4;              // rare accent sparkle
+        else if (p.w > 0.75) b = 0;            // brightest — eye whites, cheek highlight
+        else if (p.w > 0.5)  b = 1;            // main skin tone
+        else if (p.w > 0.28) b = 2;            // mid tone
+        else                 b = 3;            // shadow/hair fringe
 
-        // Color: darker mask value → darker dot, lighter mask → main color, tiny hue → accent sprinkle
-        const darkness = p.w;
-        let fill: string;
-        if (p.hue > 0.965) {
-          fill = accent;
-          ctx.globalAlpha = 0.95;
-        } else if (darkness > 0.7) {
-          fill = "#05070B";
-          ctx.globalAlpha = 0.95;
-        } else if (darkness > 0.45) {
-          fill = "#1A2029";
-          ctx.globalAlpha = 0.9;
-        } else if (darkness > 0.25) {
-          fill = "#5A6474";
-          ctx.globalAlpha = 0.85;
-        } else {
-          fill = color;
-          ctx.globalAlpha = 0.7;
-        }
-        ctx.fillStyle = fill;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
+        const pth = paths[b].path;
+        pth.moveTo(x + p.r, y);
+        pth.arc(x, y, p.r, 0, Math.PI * 2);
+      }
+
+      for (const p of paths) {
+        ctx.fillStyle = p.fill;
+        ctx.globalAlpha = p.alpha;
+        ctx.fill(p.path);
       }
       ctx.globalAlpha = 1;
+
       raf = requestAnimationFrame(frame);
     }
 
@@ -479,7 +607,7 @@ export function DotPortrait({
   }, [
     seed, color, accent, density,
     variant.hair, variant.hairColor, variant.glasses, variant.beard,
-    variant.brow, variant.lips, variant.jaw, variant.tilt, variant.skin,
+    variant.brow, variant.lips, variant.jaw, variant.tilt,
   ]);
 
   return <canvas ref={ref} className={className} />;
