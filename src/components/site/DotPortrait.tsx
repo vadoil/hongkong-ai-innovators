@@ -499,17 +499,18 @@ export function DotPortrait({
       pts = [];
       const area = W * H;
       // ~18k points on a ~220x275 card; scales with area & density prop
-      const target = Math.floor(area / 9 * density);
+      const target = Math.floor(area / 6 * density);
       let tries = 0;
-      const maxTries = target * 25;
+      const maxTries = target * 40;
       while (pts.length < target && tries < maxTries) {
         tries++;
         const nx = rand();
         const ny = rand();
         const w = sampleMask(nx, ny);
-        if (w <= 0.05) continue;
-        // Rejection sampling — probability skews toward brighter (lit) regions
-        if (rand() > Math.min(1, w * 1.15)) continue;
+        if (w <= 0.03) continue;
+        // Rejection sampling — probability skews toward brighter (lit) regions,
+        // but stays generous so silhouette + shadow gradients fill in.
+        if (rand() > Math.min(1, w * 1.8)) continue;
         const x = nx * W;
         const y = ny * H;
         pts.push({
