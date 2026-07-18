@@ -612,24 +612,141 @@ export function Services() {
 /* ---------- PROCESS ---------- */
 const stepNums = ["01", "02", "03", "04", "05"];
 
+function StageScene({ i }: { i: number }) {
+  switch (i) {
+    case 0: // Discover — magnifier scanning grid
+      return (
+        <div className="absolute inset-0">
+          <div className="absolute inset-3 rounded-lg opacity-40"
+               style={{ backgroundImage: "linear-gradient(var(--color-border) 1px,transparent 1px),linear-gradient(90deg,var(--color-border) 1px,transparent 1px)", backgroundSize: "14px 14px" }} />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+               style={{ animation: "cursorMove 4s ease-in-out infinite" }}>
+            <div className="relative h-10 w-10 rounded-full border-2 border-primary/70 shadow-[0_0_24px_-2px_var(--color-primary)]">
+              <div className="absolute -bottom-1 -right-1 h-3 w-[2px] rotate-45 bg-primary/80" />
+            </div>
+          </div>
+        </div>
+      );
+    case 1: // Strategy — connected nodes
+      return (
+        <svg viewBox="0 0 120 80" className="absolute inset-0 h-full w-full">
+          <g fill="var(--color-primary)">
+            <circle cx="20" cy="20" r="3"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" /></circle>
+            <circle cx="60" cy="14" r="3"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin=".3s" repeatCount="indefinite" /></circle>
+            <circle cx="100" cy="30" r="3"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin=".6s" repeatCount="indefinite" /></circle>
+            <circle cx="34" cy="58" r="3" fill="var(--color-jade)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin=".9s" repeatCount="indefinite" /></circle>
+            <circle cx="82" cy="62" r="3" fill="var(--color-cn-gold)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" begin="1.2s" repeatCount="indefinite" /></circle>
+          </g>
+          <g stroke="var(--color-primary)" strokeOpacity="0.5" strokeWidth="0.7" fill="none" strokeDasharray="3 3">
+            <line x1="20" y1="20" x2="60" y2="14"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1.4s" repeatCount="indefinite" /></line>
+            <line x1="60" y1="14" x2="100" y2="30"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1.4s" repeatCount="indefinite" /></line>
+            <line x1="20" y1="20" x2="34" y2="58"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1.4s" repeatCount="indefinite" /></line>
+            <line x1="34" y1="58" x2="82" y2="62"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1.4s" repeatCount="indefinite" /></line>
+            <line x1="82" y1="62" x2="100" y2="30"><animate attributeName="stroke-dashoffset" from="0" to="-12" dur="1.4s" repeatCount="indefinite" /></line>
+          </g>
+        </svg>
+      );
+    case 2: // Design — wireframe blocks
+      return (
+        <div className="absolute inset-3 flex flex-col gap-1.5">
+          <div className="h-2 w-1/3 rounded bg-primary/60" style={{ animation: "typeIn 3s ease-in-out infinite" }} />
+          <div className="grid flex-1 grid-cols-3 gap-1.5">
+            <div className="rounded bg-surface/80 ring-1 ring-border" style={{ animation: "floatY 4s ease-in-out infinite" }} />
+            <div className="col-span-2 rounded bg-surface/80 ring-1 ring-border" style={{ animation: "floatY 4.4s ease-in-out .2s infinite" }} />
+            <div className="col-span-2 rounded bg-primary/15 ring-1 ring-primary/40" style={{ animation: "floatY 4.8s ease-in-out .4s infinite" }} />
+            <div className="rounded bg-jade/15 ring-1 ring-jade/40" style={{ animation: "floatY 5.2s ease-in-out .6s infinite" }} />
+          </div>
+        </div>
+      );
+    case 3: // Build — code stream
+      return (
+        <div className="absolute inset-3 overflow-hidden rounded-md bg-background/60 font-mono text-[9px] leading-[1.35] text-primary/80">
+          <div className="p-2" style={{ animation: "codeScroll 6s linear infinite" }}>
+            <div><span className="text-muted-foreground">const</span> ship = <span className="text-jade">async</span>() {"=>"} {"{"}</div>
+            <div className="pl-3"><span className="text-cn-gold">await</span> build(app);</div>
+            <div className="pl-3">deploy(<span className="text-jade">"hk"</span>);</div>
+            <div className="pl-3"><span className="text-cn-gold">return</span> live;</div>
+            <div>{"}"}</div>
+            <div><span className="text-muted-foreground">// ai.integrate()</span></div>
+            <div>ship();</div>
+            <div className="text-jade">✓ passed 128 tests</div>
+          </div>
+        </div>
+      );
+    default: // Launch — rocket trail
+      return (
+        <svg viewBox="0 0 120 80" className="absolute inset-0 h-full w-full">
+          <defs>
+            <linearGradient id={`pl${i}`} x1="0" x2="1">
+              <stop offset="0" stopColor="var(--color-primary)" stopOpacity="0" />
+              <stop offset="1" stopColor="var(--color-cn-gold)" />
+            </linearGradient>
+          </defs>
+          <path id={`arc${i}`} d="M8,70 Q60,10 112,20" fill="none" stroke={`url(#pl${i})`} strokeWidth="2" strokeDasharray="180" strokeDashoffset="180"
+                style={{ animation: "drawLine 3s ease-out infinite" }} />
+          <g>
+            <circle r="4" fill="var(--color-cn-gold)" style={{ filter: "drop-shadow(0 0 6px var(--color-cn-gold))" }}>
+              <animateMotion dur="3s" repeatCount="indefinite">
+                <mpath href={`#arc${i}`} />
+              </animateMotion>
+            </circle>
+          </g>
+          {[15, 45, 75, 100].map((cx, k) => (
+            <circle key={k} cx={cx} cy={70 - k * 3} r="0.8" fill="var(--color-muted-foreground)" opacity="0.5" />
+          ))}
+        </svg>
+      );
+  }
+}
+
 export function Process() {
   const { t } = useI18n();
   return (
     <section id="process" className="relative py-24 md:py-32">
+      <div className="pointer-events-none absolute -top-32 left-1/2 -z-0 h-[420px] w-[900px] -translate-x-1/2 glow-blue opacity-30" />
       <div className="mx-auto max-w-7xl px-6">
         <SectionHead eyebrow={t("process.eyebrow")} title={t("process.title")} />
-        <div className="relative mt-14 grid gap-6 md:grid-cols-5">
-          <div className="pointer-events-none absolute left-0 right-0 top-6 hidden h-px bg-gradient-to-r from-transparent via-border to-transparent md:block" />
-          {stepNums.map((n, i) => (
-            <Reveal key={n} delay={i * 0.1} className="group relative">
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-full border border-border bg-background font-display text-sm text-primary">
-                <span className="absolute inset-0 rounded-full bg-primary/10 blur-md opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                <span className="relative">{n}</span>
-              </div>
-              <h3 className="mt-5 font-display text-base font-semibold">{t(`process.${i + 1}.t`)}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{t(`process.${i + 1}.d`)}</p>
-            </Reveal>
-          ))}
+
+        {/* Animated pipeline */}
+        <div className="relative mt-16">
+          {/* Flow rail (desktop) */}
+          <svg className="pointer-events-none absolute inset-x-0 top-[86px] hidden h-6 w-full md:block" viewBox="0 0 1000 24" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="rail" x1="0" x2="1">
+                <stop offset="0" stopColor="var(--color-primary)" stopOpacity="0" />
+                <stop offset=".2" stopColor="var(--color-primary)" stopOpacity=".6" />
+                <stop offset=".5" stopColor="var(--color-jade)" stopOpacity=".7" />
+                <stop offset=".8" stopColor="var(--color-cn-gold)" stopOpacity=".7" />
+                <stop offset="1" stopColor="var(--color-cn-gold)" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="12" x2="1000" y2="12" stroke="var(--color-border)" strokeWidth="1" />
+            <line x1="0" y1="12" x2="1000" y2="12" stroke="url(#rail)" strokeWidth="2" strokeDasharray="6 10"
+                  style={{ animation: "flow-dash 8s linear infinite" }} />
+          </svg>
+
+          <div className="relative grid gap-6 md:grid-cols-5">
+            {stepNums.map((n, i) => (
+              <Reveal key={n} delay={i * 0.1} className="group relative">
+                <div className="relative overflow-hidden rounded-2xl border border-border bg-background/70 p-4 backdrop-blur-md transition-all duration-500 group-hover:-translate-y-1 group-hover:border-primary/50 group-hover:shadow-[0_25px_60px_-30px_var(--color-primary)]">
+                  {/* screen */}
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-border/70 bg-[radial-gradient(120%_80%_at_20%_0%,oklch(0.28_0.03_260/.6),transparent_60%),oklch(0.13_0.02_260)]">
+                    <div className="pointer-events-none absolute inset-0 opacity-[0.07] mix-blend-overlay"
+                         style={{ backgroundImage: "repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 1px,transparent 3px)" }} />
+                    <StageScene i={i} />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.05] via-transparent to-transparent" />
+                  </div>
+                  {/* number chip sits on the flow line */}
+                  <div className="relative -mt-6 mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-primary/40 bg-background font-display text-sm text-primary shadow-[0_10px_30px_-10px_var(--color-primary)]">
+                    <span className="absolute inset-0 rounded-full bg-primary/15 blur-md opacity-70" />
+                    <span className="relative">{n}</span>
+                  </div>
+                  <h3 className="mt-4 text-center font-display text-base font-semibold">{t(`process.${i + 1}.t`)}</h3>
+                  <p className="mt-2 text-center text-sm leading-relaxed text-muted-foreground">{t(`process.${i + 1}.d`)}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>
