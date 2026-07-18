@@ -8,6 +8,10 @@ import teamChan from "@/assets/team-chan.jpg";
 import teamLin from "@/assets/team-lin.jpg";
 import teamMarco from "@/assets/team-marco.jpg";
 import teamAna from "@/assets/team-ana.jpg";
+import teamKenji from "@/assets/team-kenji.jpg";
+import teamPriya from "@/assets/team-priya.jpg";
+import teamDavid from "@/assets/team-david.jpg";
+import teamYuki from "@/assets/team-yuki.jpg";
 
 /* ---------- Clients Marquee ---------- */
 const clientLogos = [
@@ -186,9 +190,18 @@ export function BigStats() {
 /* ---------- Team ---------- */
 export function Team() {
   const { t } = useI18n();
-  const members = [1, 2, 3, 4] as const;
-  const accents = ["from-primary/40 to-jade/40", "from-cn-red/40 to-cn-gold/40", "from-jade/40 to-primary/40", "from-cn-gold/40 to-primary/40"];
-  const photos = [teamChan, teamLin, teamMarco, teamAna];
+  const members = [1, 2, 3, 4, 5, 6, 7, 8] as const;
+  const accents = [
+    "from-primary/40 to-jade/40",
+    "from-cn-red/40 to-cn-gold/40",
+    "from-jade/40 to-primary/40",
+    "from-cn-gold/40 to-primary/40",
+    "from-primary/40 to-cn-red/40",
+    "from-jade/40 to-cn-gold/40",
+    "from-primary/40 to-jade/40",
+    "from-cn-red/40 to-primary/40",
+  ];
+  const photos = [teamChan, teamLin, teamMarco, teamAna, teamKenji, teamPriya, teamDavid, teamYuki];
   return (
     <section className="relative border-t border-border bg-surface/30 py-24 md:py-32">
       <div className="pointer-events-none absolute -top-40 right-0 -z-0 h-[520px] w-[520px] glow-jade opacity-30" />
