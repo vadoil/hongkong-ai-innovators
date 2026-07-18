@@ -417,29 +417,190 @@ export function Pillars() {
 /* ---------- SERVICES DETAIL ---------- */
 const serviceIcons = [Compass, FileText, PenTool, Cloud, Rocket, Layers];
 
+/* Tiny per-monitor illustrations (pure SVG/CSS, no assets) */
+function MonitorScene({ i }: { i: number }) {
+  const common = "absolute inset-0";
+  switch (i) {
+    case 0: // Compass / Research — radar rings + persona blips
+      return (
+        <div className={common}>
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            {[1, 2, 3, 4].map((r) => (
+              <div
+                key={r}
+                className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/30"
+                style={{
+                  width: r * 44,
+                  height: r * 44,
+                  animation: `radarPulse 3.6s ease-out ${r * 0.4}s infinite`,
+                }}
+              />
+            ))}
+          </div>
+          <span className="absolute left-[22%] top-[30%] h-1.5 w-1.5 rounded-full bg-jade shadow-[0_0_10px_var(--color-jade)]" />
+          <span className="absolute right-[26%] top-[58%] h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_10px_var(--color-primary)]" />
+          <span className="absolute left-[46%] top-[74%] h-1.5 w-1.5 rounded-full bg-cn-gold shadow-[0_0_10px_var(--color-cn-gold)]" />
+        </div>
+      );
+    case 1: // Docs / Strategy — lines being typed
+      return (
+        <div className={`${common} flex flex-col justify-center gap-2 px-6`}>
+          {[92, 74, 88, 60, 80, 46].map((w, k) => (
+            <div
+              key={k}
+              className="h-1.5 rounded-full bg-gradient-to-r from-primary/60 via-primary/30 to-transparent"
+              style={{ width: `${w}%`, animation: `typeIn 2.8s ease-in-out ${k * 0.25}s infinite` }}
+            />
+          ))}
+        </div>
+      );
+    case 2: // Design — shapes + cursor
+      return (
+        <div className={common}>
+          <div className="absolute left-[18%] top-[26%] h-10 w-10 rounded-lg border border-primary/50 bg-primary/10" style={{ animation: "floatY 4s ease-in-out infinite" }} />
+          <div className="absolute right-[22%] top-[22%] h-8 w-8 rounded-full border border-jade/50 bg-jade/10" style={{ animation: "floatY 4.6s ease-in-out .4s infinite" }} />
+          <div className="absolute left-[36%] bottom-[22%] h-0 w-0 border-b-[28px] border-l-[16px] border-r-[16px] border-b-cn-gold/60 border-l-transparent border-r-transparent" style={{ animation: "floatY 5s ease-in-out .8s infinite" }} />
+          <div className="absolute right-[28%] bottom-[30%] text-primary" style={{ animation: "cursorMove 5s ease-in-out infinite" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 2l7 18 2.5-7L20 10z" /></svg>
+          </div>
+        </div>
+      );
+    case 3: // Cloud — server bars
+      return (
+        <div className={`${common} flex items-end justify-center gap-1.5 px-8 pb-6`}>
+          {Array.from({ length: 14 }).map((_, k) => (
+            <div
+              key={k}
+              className="w-2 rounded-t bg-gradient-to-t from-primary/70 to-jade/70"
+              style={{ height: `${20 + ((k * 37) % 60)}%`, animation: `barPulse 1.6s ease-in-out ${k * 0.08}s infinite` }}
+            />
+          ))}
+          <div className="pointer-events-none absolute inset-x-6 bottom-4 h-px bg-primary/40" />
+        </div>
+      );
+    case 4: // Rocket — trajectory chart
+      return (
+        <div className={common}>
+          <svg viewBox="0 0 200 120" className="absolute inset-0 h-full w-full" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="rk" x1="0" x2="1">
+                <stop offset="0" stopColor="var(--color-primary)" stopOpacity="0.1" />
+                <stop offset="1" stopColor="var(--color-jade)" stopOpacity="1" />
+              </linearGradient>
+            </defs>
+            <path d="M10,100 C60,95 90,80 120,55 S180,15 195,10" fill="none" stroke="url(#rk)" strokeWidth="2" strokeDasharray="260" strokeDashoffset="260" style={{ animation: "drawLine 3.2s ease-out infinite" }} />
+            <circle r="3" fill="var(--color-cn-gold)" style={{ animation: "orbitDot 3.2s ease-out infinite" }}>
+              <animateMotion dur="3.2s" repeatCount="indefinite" path="M10,100 C60,95 90,80 120,55 S180,15 195,10" />
+            </circle>
+          </svg>
+          <div className="absolute inset-x-4 bottom-3 flex gap-3 text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70">
+            <span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span>
+          </div>
+        </div>
+      );
+    default: // Layers / Operate — stacked panels
+      return (
+        <div className={common}>
+          {[0, 1, 2].map((k) => (
+            <div
+              key={k}
+              className="absolute left-1/2 -translate-x-1/2 rounded-lg border border-border bg-surface/70 backdrop-blur"
+              style={{
+                top: `${28 + k * 14}%`,
+                width: `${72 - k * 10}%`,
+                height: 34,
+                animation: `layerFloat 4s ease-in-out ${k * 0.3}s infinite`,
+                boxShadow: "0 10px 30px -20px rgba(0,0,0,.6)",
+              }}
+            >
+              <div className="flex h-full items-center gap-2 px-3">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                <span className="h-1 w-1/3 rounded bg-muted-foreground/30" />
+                <span className="ml-auto h-1 w-8 rounded bg-jade/60" />
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+  }
+}
+
+function Monitor({ i, Icon, title, desc, learn }: { i: number; Icon: typeof Compass; title: string; desc: string; learn: string }) {
+  return (
+    <Link
+      to="/contact"
+      className="group relative block"
+    >
+      {/* Monitor body */}
+      <div className="relative overflow-hidden rounded-[22px] border border-border bg-gradient-to-b from-surface to-background p-3 shadow-[0_30px_60px_-40px_rgba(0,0,0,.8)] transition-all duration-500 group-hover:-translate-y-1 group-hover:border-primary/50 group-hover:shadow-[0_40px_80px_-30px_var(--color-primary)]">
+        {/* Bezel top: camera + LEDs */}
+        <div className="flex items-center justify-between px-3 pb-2 pt-1">
+          <div className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-cn-red/70" />
+            <span className="h-1.5 w-1.5 rounded-full bg-cn-gold/70" />
+            <span className="h-1.5 w-1.5 rounded-full bg-jade/70" />
+          </div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground/70">
+            0{i + 1} · {["research", "spec", "design", "build", "launch", "operate"][i]}
+          </span>
+          <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />
+        </div>
+
+        {/* Screen */}
+        <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-border/80 bg-[radial-gradient(120%_80%_at_20%_0%,oklch(0.28_0.03_260/.6),transparent_60%),radial-gradient(120%_80%_at_100%_100%,oklch(0.32_0.06_240/.5),transparent_50%),oklch(0.12_0.02_260)]">
+          {/* scanlines */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.08] mix-blend-overlay"
+            style={{ backgroundImage: "repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 1px,transparent 3px)" }}
+          />
+          {/* screen glow */}
+          <div className="pointer-events-none absolute -inset-10 opacity-0 blur-3xl transition-opacity duration-700 group-hover:opacity-60"
+               style={{ background: "radial-gradient(closest-side,var(--color-primary),transparent)" }} />
+          {/* scene */}
+          <MonitorScene i={i} />
+          {/* Icon chip */}
+          <div className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-background/60 text-primary ring-1 ring-primary/30 backdrop-blur-md transition-transform duration-500 group-hover:scale-110">
+            <Icon className="h-4 w-4" />
+          </div>
+          {/* screen reflection */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.06] via-transparent to-transparent" />
+        </div>
+
+        {/* Stand */}
+        <div className="relative mx-auto mt-3 h-3 w-24 rounded-b-[10px] bg-gradient-to-b from-border to-surface" />
+        <div className="mx-auto -mt-px h-1 w-40 rounded-full bg-gradient-to-r from-transparent via-border to-transparent" />
+
+        {/* Copy */}
+        <div className="px-3 pb-1 pt-5">
+          <h3 className="font-display text-lg font-semibold tracking-tight">{title}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
+          <div className="mt-4 inline-flex items-center gap-1 text-sm text-primary opacity-0 -translate-x-2 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100">
+            {learn} <ArrowUpRight className="h-4 w-4" />
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export function Services() {
   const { t } = useI18n();
   return (
     <section className="relative border-t border-border bg-surface/40 py-24 md:py-32">
+      {/* desk-line */}
+      <div className="pointer-events-none absolute inset-x-0 top-1/2 -z-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
       <div className="mx-auto max-w-7xl px-6">
         <SectionHead eyebrow={t("services.eyebrow")} title={t("services.title")} />
         <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {serviceIcons.map((Icon, i) => (
             <Reveal key={i} delay={i * 0.06}>
-              <Link
-                to="/contact"
-                className="group relative block overflow-hidden rounded-2xl border border-border bg-background p-7 transition-all duration-500 hover:-translate-y-1 hover:border-primary/50 hover:bg-surface hover:shadow-[0_20px_60px_-30px_var(--color-primary)]"
-              >
-                <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-500 group-hover:scale-110">
-                  <Icon className="h-5 w-5 transition-transform duration-500 group-hover:rotate-6 group-hover:animate-icon-bob" />
-                </div>
-                <h3 className="mt-6 font-display text-xl font-semibold">{t(`services.${i + 1}.t`)}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t(`services.${i + 1}.d`)}</p>
-                <div className="mt-6 inline-flex items-center gap-1 text-sm text-primary opacity-0 -translate-x-2 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100">
-                  {t("services.learn")} <ArrowUpRight className="h-4 w-4" />
-                </div>
-              </Link>
+              <Monitor
+                i={i}
+                Icon={Icon}
+                title={t(`services.${i + 1}.t`)}
+                desc={t(`services.${i + 1}.d`)}
+                learn={t("services.learn")}
+              />
             </Reveal>
           ))}
         </div>
