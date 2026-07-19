@@ -64,11 +64,27 @@ bash deploy/scripts/server-deploy.sh
 
 ## 3. nginx + SSL
 
+Быстрый вариант — одной командой на VPS из папки проекта:
+
+```bash
+cd /var/www/cwh
+bash deploy/scripts/setup-ssl.sh
+```
+
+Скрипт откроет `80/443`, поставит nginx/certbot, подключит конфиг, выпустит сертификат Let's Encrypt и включит редирект HTTP → HTTPS.
+
+Ручной вариант:
+
 ```bash
 sudo cp /var/www/cwh/deploy/nginx/cwh.hk.conf /etc/nginx/sites-available/cwh.hk
 sudo ln -sf /etc/nginx/sites-available/cwh.hk /etc/nginx/sites-enabled/cwh.hk
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t && sudo systemctl reload nginx
+
+# важно: HTTPS не заработает, если 443 закрыт firewall'ом
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow 'Nginx Full'
 
 # DNS: A cwh.hk и A www.cwh.hk → 192.142.51.83 (должно уже резолвиться)
 sudo certbot --nginx -d cwh.hk -d www.cwh.hk --redirect --agree-tos -m admin@cwh.hk --no-eff-email
